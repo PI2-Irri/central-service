@@ -1,0 +1,8 @@
+POSTGRES_DB=central-db
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=password
+POSTGRES_HOST=central-db
+POSTGRES_PORT=5432
+PYTHONUNBUFFERED=1
+ENVIRONMENT=development
+SECRET_KEY==wv-tcyh^*5-v7%hxvmzj#^^y6%z@s*np+@2-(faz&g#1nz39y
