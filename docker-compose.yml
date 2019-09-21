@@ -1,0 +1,36 @@
+version: '3.5'
+
+services:
+  central-service:
+    container_name: central-service
+    build: .
+    command: ["sh", "scripts/start.sh"]
+    env_file: dev-env
+    networks:
+      - central-service-network
+    ports:
+      - 4001:4001
+    volumes:
+      - .:/central-service
+    depends_on:
+      - central-db
+
+  central-db:
+    container_name: central-db
+    hostname: central-db
+    image: postgres:9.6
+    env_file: dev-env
+    networks:
+      - central-service-network
+    ports:
+      - 5432:5432
+    volumes:
+      - central-pg-data:/var/lib/postgresql/data
+
+volumes:
+  central-pg-data: {}
+
+networks:
+  central-service-network:
+    name: central-service-network
+    driver: bridge
