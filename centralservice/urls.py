@@ -4,13 +4,19 @@ from django.urls import include
 from django.contrib import admin
 from rest_framework.routers import DefaultRouter
 
-from users import views as users_views
+from users import urls as users_routers
 
 router = DefaultRouter()
 
-urlpatterns = [
+defaultpatterns = [
     url(r'^admin/', admin.site.urls),
     path('', include(router.urls)),
-    path('login/', users_views.CustomUserViewSet.login),
-    path('signup/', users_views.CustomUserViewSet.signup)
 ]
+
+urlpatterns = []
+
+# Admin page and main urls
+urlpatterns += defaultpatterns
+
+# Login and register path's
+urlpatterns += users_routers.urlpatterns
