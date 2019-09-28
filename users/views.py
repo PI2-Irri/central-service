@@ -38,12 +38,22 @@ class CustomUserViewSet(viewsets.ModelViewSet):
     def login(request):
         username = request.data.get('username')
         password = request.data.get('password')
+        email = request.data.get('email')
 
-        if username is None or password is None:
+        if not password:
             return Response(
-                {'error': 'Please provide username and password'},
+                {'error': 'Please provide a valid password'},
                 status=HTTP_400_BAD_REQUEST
             )
+        else:
+            if not username and email:
+                username = CustomUser.objects.get(email=email).username
+            else:
+                if not username and not email:
+                    return Response(
+                        {'error': 'Please provide a username or email'},
+                        status=HTTP_400_BAD_REQUEST
+                    )
 
         user = authenticate(username=username, password=password)
 
