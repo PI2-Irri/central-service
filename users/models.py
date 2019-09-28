@@ -10,6 +10,7 @@ class CustomUser(AbstractUser):
     email = models.EmailField(max_length=255, unique=True)
 
     registration_date = models.DateTimeField(null=True, blank=True)
+    last_login = models.DateTimeField(null=True, blank=True)
 
     is_admin = models.BooleanField(default=False)
     is_trusty = models.BooleanField(default=False)

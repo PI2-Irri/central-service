@@ -8,6 +8,7 @@ from rest_framework.status import HTTP_400_BAD_REQUEST
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
+from django.utils import timezone
 from .serializers import *
 
 
@@ -63,6 +64,8 @@ class CustomUserViewSet(viewsets.ModelViewSet):
                 status=HTTP_404_NOT_FOUND
             )
 
+        user.last_login = timezone.now()
+        user.save()
         token, _ = Token.objects.get_or_create(user=user)
 
         serialized_user = CustomUserSerializer(user)
