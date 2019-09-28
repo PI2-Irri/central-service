@@ -60,7 +60,7 @@ class CustomUserViewSet(viewsets.ModelViewSet):
         if not user:
             return Response(
                 {'error': 'Invalid Credentials'},
-                status=HTTP_404_NOT_FOUND
+                status=HTTP_200_OK
             )
 
         user.last_login = timezone.now()
