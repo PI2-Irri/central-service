@@ -9,8 +9,7 @@ class CustomUserSerializer(serializers.HyperlinkedModelSerializer):
         model = CustomUser
         fields = (
             'email',
-            'first_name',
-            'last_name',
+            'fullname',
             'username',
             'password'
         )
@@ -22,8 +21,7 @@ class CustomUserSerializer(serializers.HyperlinkedModelSerializer):
         user = CustomUser(
             username=validated_data.get('username'),
             email=validated_data.get('email'),
-            first_name=validated_data.get('first_name'),
-            last_name=validated_data.get('last_name')
+            fullname=validated_data.get('fullname'),
         )
 
         user.set_password(validated_data.get('password'))
