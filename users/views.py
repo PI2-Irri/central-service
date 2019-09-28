@@ -19,7 +19,6 @@ class CustomUserViewSet(viewsets.ModelViewSet):
 
     @api_view(['POST'])
     def signup(request):
-        print(request)
         if request.method == 'POST':
             serializer = CustomUserSerializer(data=request.data)
             data = {}
