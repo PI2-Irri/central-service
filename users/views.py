@@ -27,9 +27,10 @@ class CustomUserViewSet(viewsets.ModelViewSet):
                 account = serializer.save()
                 data['response'] = 'Successfully registered a new user'
                 data['email'] = account.email
-                data['username'] = account.username
             else:
                 data = serializer.errors
+                if 'error' not in data:
+                    data['error'] = 'Error during signup'
 
             return Response(data)
 
