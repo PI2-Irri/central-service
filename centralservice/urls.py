@@ -3,10 +3,12 @@ from django.urls import path
 from django.urls import include
 from django.contrib import admin
 from rest_framework.routers import DefaultRouter
+from controllers import views as controller_views
 
 from users import urls as users_routers
 
 router = DefaultRouter()
+router.register(r'controller', controller_views.ControllerViewSet)
 
 defaultpatterns = [
     url(r'^admin/', admin.site.urls),
