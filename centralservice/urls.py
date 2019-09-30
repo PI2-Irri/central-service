@@ -8,7 +8,7 @@ from controllers import views as controller_views
 from users import urls as users_routers
 
 router = DefaultRouter()
-router.register(r'controller', controller_views.ControllerViewSet)
+router.register(r'controllers', controller_views.ControllerViewSet)
 
 defaultpatterns = [
     url(r'^admin/', admin.site.urls),
