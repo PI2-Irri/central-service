@@ -1,6 +1,5 @@
-# -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-
+from controllers.models import Controller
 from django.db import models
 
 class Zone(models.Model):
@@ -10,3 +9,4 @@ class Zone(models.Model):
     longitude = models.FloatField(default=0.0)
     precipitation = models.FloatField(default=0.0)
     ambient_temperature = models.FloatField(default=0.0)
+    controller = models.ForeignKey(Controller, on_delete=models.CASCADE)

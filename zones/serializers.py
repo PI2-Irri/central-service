@@ -14,5 +14,6 @@ class ZoneSerializer(serializers.HyperlinkedModelSerializer):
             'longitude',
             'precipitation',
             'ambient_temperature',
+            'controller',
             'url'
         )
