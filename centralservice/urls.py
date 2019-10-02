@@ -11,7 +11,7 @@ from users import urls as users_routers
 router = DefaultRouter()
 
 router.register(r'controllers', controller_views.ControllerViewSet)
-router.register(r'zone', zone_views.ZoneViewSet)
+router.register(r'zones', zone_views.ZoneViewSet)
 
 defaultpatterns = [
     url(r'^admin/', admin.site.urls),
