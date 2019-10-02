@@ -1,7 +1,7 @@
 version: '3.5'
 
 services:
-  central-service:
+  api:
     container_name: central-service
     build: .
     command: ["sh", "scripts/start.sh"]
@@ -13,9 +13,9 @@ services:
     volumes:
       - .:/central-service
     depends_on:
-      - central-db
+      - db
 
-  central-db:
+  db:
     container_name: central-db
     hostname: central-db
     image: postgres:9.6

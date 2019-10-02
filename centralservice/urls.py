@@ -9,7 +9,8 @@ from zones import views as zone_views
 from users import urls as users_routers
 
 router = DefaultRouter()
-router.register(r'controller', controller_views.ControllerViewSet)
+
+router.register(r'controllers', controller_views.ControllerViewSet)
 router.register(r'zone', zone_views.ZoneViewSet)
 
 defaultpatterns = [
