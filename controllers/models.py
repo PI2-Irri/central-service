@@ -7,4 +7,4 @@ class Controller(models.Model):
     is_valid = models.BooleanField(default=False)
     token = models.CharField(max_length=10, unique=True)
 
-    owner = models.ManyToManyField(CustomUser, related_name='users')
+    owner = models.ManyToManyField(CustomUser)
