@@ -22,6 +22,3 @@ class ControllerViewSet(viewsets.ModelViewSet):
         self.queryset = user.controller_set.all()
 
         return self.queryset
-
-    def validate_query_params(self, params):
-        pass
