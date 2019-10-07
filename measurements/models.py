@@ -1,6 +1,9 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
 from django.db import models
+from controllers.models import Controller
 
-# Create your models here.
+
+class ActuatorsMeasurement(models.Model):
+    water_consumption = models.FloatField(default=0.0)
+    reservoir_level = models.FloatField(default=0.0)
+
+    controller = models.ForeignKey(Controller, on_delete=models.CASCADE)

@@ -45,7 +45,9 @@ INSTALLED_APPS = [
     'corsheaders',
     'users',
     'controllers',
-    'zones'
+    'zones',
+    'modules',
+    'measurements'
 ]
 
 MIDDLEWARE = [
