@@ -13,7 +13,7 @@ from .serializers import *
 
 
 class CustomUserViewSet(viewsets.ModelViewSet):
-    queryset = CustomUser.objects.all()
+    queryset = CustomUser.objects.none()
     serializer_class = CustomUserSerializer
     permission_classes = (permissions.AllowAny)
 
