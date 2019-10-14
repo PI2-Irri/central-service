@@ -21,7 +21,7 @@ class CustomUserSerializer(serializers.HyperlinkedModelSerializer):
         user = CustomUser(
             username=validated_data.get('username'),
             email=validated_data.get('email'),
-            fullname=validated_data.get('fullname'),
+            fullname=validated_data.get('fullname')
         )
 
         user.set_password(validated_data.get('password'))

@@ -4,7 +4,7 @@ from .exceptions import ControllerTokenException
 from controllers.models import Controller
 
 class ControllerCommunication():
-    
+
     @staticmethod
     def check_token(token, ip_address):
         response = requests.get(ip_address, params={"token": token})
@@ -28,15 +28,8 @@ class ControllerCommunication():
         for controller in controllers:
             response = requests.get(
                 os.getenv(
-                    "MODULE_URL", 
+                    "MODULE_URL",
                     "http://localhost:3000/module_measurements"
                 ),
                 params={"token": controller.token}
             ).json()
-
-            
-        
-
-
-
-        measurements
