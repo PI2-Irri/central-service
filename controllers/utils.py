@@ -1,5 +1,7 @@
+import os
 import requests
 from .exceptions import ControllerTokenException
+from controllers.models import Controller
 
 class ControllerCommunication():
     
@@ -17,3 +19,24 @@ class ControllerCommunication():
         response = requests.get(ip, params={"token": token})
 
         return response.json()
+
+    @staticmethod
+    def collect_all_measurements():
+        controllers = Controller.objects.all()
+
+        #TODO - put try except
+        for controller in controllers:
+            response = requests.get(
+                os.getenv(
+                    "MODULE_URL", 
+                    "http://localhost:3000/module_measurements"
+                ),
+                params={"token": controller.token}
+            ).json()
+
+            
+        
+
+
+
+        measurements
