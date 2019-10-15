@@ -17,6 +17,7 @@ class Controller(models.Model):
                 code='invalid_ip_address'
             ),
     ])
+    port = models.CharField(max_length=6, default=':3000/')
 
     token = models.CharField(max_length=10, unique=True)
 
