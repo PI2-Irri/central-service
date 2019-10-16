@@ -31,6 +31,7 @@ class ActuatorsMeasurementViewSet(mixins.RetrieveModelMixin,
 
         return self.queryset
 
+
 class ModulesMeasurementViewSet(mixins.RetrieveModelMixin,
                                 mixins.DestroyModelMixin,
                                 mixins.ListModelMixin,

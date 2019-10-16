@@ -10,6 +10,7 @@ class ActuatorsMeasurement(models.Model):
 
     controller = models.ForeignKey(Controller, on_delete=models.CASCADE)
 
+
 class ModulesMeasurement(models.Model):
     temperature = models.FloatField(default=0.0)
     ground_humidity = models.IntegerField(default=0)

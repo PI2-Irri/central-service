@@ -15,6 +15,7 @@ class ActuatorsMeasurementSerializer(serializers.HyperlinkedModelSerializer):
             'url'
         )
 
+
 class ModulesMeasurementSerializer():
 
     class Meta:
