@@ -28,14 +28,13 @@ class ControllerSerializer(serializers.HyperlinkedModelSerializer):
         # except ControllerTokenException:
         #     raise APIException({"error": "Token does not match with ip token"})
 
-        controller = Controller(
+        controller = Controller.objects.get_or_create(
             name=validated_data.get('name'),
             is_valid=validated_data.get('is_valid'),
-            token=validated_data.get('token'),
-            ip_address=validated_data.get('ip_address')
+            token=token,
+            ip_address=ip
         )
 
-        controller.save()
         controller.owner.add(validated_data.get('owner'))
 
         modules = ControllerCommunication.get_controller_modules(
