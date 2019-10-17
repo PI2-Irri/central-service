@@ -33,3 +33,9 @@ class ControllerCommunication():
                 ),
                 params={"token": controller.token}
             ).json()
+
+    @staticmethod
+    def collect_from_controller(ip_address):
+        response = requests.get(ip_address).json()
+
+        return response
