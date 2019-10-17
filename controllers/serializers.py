@@ -4,6 +4,7 @@ from .exceptions import ControllerTokenException
 from rest_framework.exceptions import APIException
 from .utils import ControllerCommunication
 from modules.models import Module
+from modules.serializers import ModuleSerializer
 
 class ControllerSerializer(serializers.HyperlinkedModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.username')
@@ -28,12 +29,21 @@ class ControllerSerializer(serializers.HyperlinkedModelSerializer):
         # except ControllerTokenException:
         #     raise APIException({"error": "Token does not match with ip token"})
 
-        controller = Controller.objects.get_or_create(
-            name=validated_data.get('name'),
-            is_valid=validated_data.get('is_valid'),
-            token=token,
-            ip_address=ip
-        )
+        try:
+            controller = Controller(
+                name=validated_data.get('name'),
+                is_valid=validated_data.get('is_valid'),
+                token=token,
+                ip_address=ip
+            )
+            controller.save()
+        except Exception:
+            controller = Controller.objects.get(
+                name=validated_data.get('name'),
+                is_valid=validated_data.get('is_valid'),
+                token=token,
+                ip_address=ip
+            )
 
         controller.owner.add(validated_data.get('owner'))
 
@@ -42,9 +52,12 @@ class ControllerSerializer(serializers.HyperlinkedModelSerializer):
         )
 
         for module in modules:
-            Module.objects.create(
-                rf_address=module["rf_address"],
-                controller=controller
+            module_serializer = ModuleSerializer(
+                data={
+                    'rf_address': module['rf_address']
+                }
             )
+            if module_serializer.is_valid():
+                module_serializer.save(controller=controller)
 
         return controller
