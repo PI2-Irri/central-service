@@ -24,6 +24,5 @@ class ModulesMeasurementSerializer():
             'temperature',
             'ground_humidity',
             'battery_level',
-            'is_active',
             'module',
         )

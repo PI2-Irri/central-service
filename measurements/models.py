@@ -15,6 +15,5 @@ class ModulesMeasurement(models.Model):
     temperature = models.FloatField(default=0.0)
     ground_humidity = models.IntegerField(default=0)
     battery_level = models.IntegerField(default=0)
-    is_active = models.BooleanField(default=False)
 
     module = models.ForeignKey(Module, on_delete=models.CASCADE)
