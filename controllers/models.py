@@ -5,7 +5,7 @@ from django.core.validators import RegexValidator
 
 class Controller(models.Model):
     name = models.CharField(max_length=25)
-    is_valid = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=False)
     ip_address = models.CharField(
         max_length=15,
         unique=True,
