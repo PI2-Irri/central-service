@@ -61,3 +61,17 @@ class ControllerSerializer(serializers.HyperlinkedModelSerializer):
                 module_serializer.save(controller=controller)
 
         return controller
+
+
+class ControllerItemInfoSerializer(serializers.HyperlinkedModelSerializer):
+    controller = serializers.CharField()
+    zones = serializers.ListField()
+    reservoir_level = serializers.FloatField()
+
+    class Meta:
+        model = Controller
+        fields = (
+            'controller',
+            'zones',
+            'reservoir_level'
+        )

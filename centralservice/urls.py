@@ -23,6 +23,10 @@ router.register(
     r'actuators_measurements',
     measurements_views.ActuatorsMeasurementViewSet
 )
+router.register(
+    r'modules_measurements',
+    measurements_views.ModulesMeasurementViewSet
+)
 
 defaultpatterns = [
     url(r'^admin/', admin.site.urls),
