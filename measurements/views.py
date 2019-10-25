@@ -23,7 +23,17 @@ class ActuatorsMeasurementViewSet(mixins.RetrieveModelMixin,
     def get_queryset(self):
         token = self.request.query_params.get('token')
 
+        if token is None:
+            raise APIException(
+                {'error': 'Token is required.'}
+            )
+
         controller = Controller.objects.get(token=token)
+
+        if controller is None:
+            raise APIException(
+                {'error': 'Token does not match in database.'}
+            )
 
         self.queryset = self.model.objects.filter(
             controller=controller
@@ -45,7 +55,17 @@ class ModulesMeasurementViewSet(mixins.RetrieveModelMixin,
     def get_queryset(self):
         token = self.request.query_params.get('token')
 
+        if token is None:
+            raise APIException(
+                {'error': 'Token is required.'}
+            )
+
         controller = Controller.objects.get(token=token)
+
+        if controller is None:
+            raise APIException(
+                {'error': 'Token does not match in database.'}
+            )
 
         self.queryset = self.model.objects.filter(
             controller=controller
