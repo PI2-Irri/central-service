@@ -6,8 +6,6 @@ from modules.models import Module
 class ActuatorsMeasurement(models.Model):
     water_consumption = models.FloatField(default=0.0)
     reservoir_level = models.FloatField(default=0.0)
-    water_flow = models.IntegerField(default=0)
-
     controller = models.ForeignKey(Controller, on_delete=models.CASCADE)
 
 
