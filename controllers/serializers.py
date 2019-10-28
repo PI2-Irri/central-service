@@ -27,13 +27,13 @@ class ControllerSerializer(serializers.HyperlinkedModelSerializer):
 
         try:
             controller = Controller.objects.get(token=data.get('token'))
-            user = self._kwargs.get('context')['request'].user
+            request = self._kwargs.get('context')['request']
         except Exception:
             return data
 
-        if controller:
+        if controller and request.method == 'post':
             if user not in controller.owner.all():
-                controller.owner.add(user)
+                controller.owner.add(request.user)
                 succefull_association = APIException(
                     {'detail': 'The user was associated with this controller.'}
                 )
