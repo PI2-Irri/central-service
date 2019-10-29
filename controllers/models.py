@@ -9,3 +9,6 @@ class Controller(models.Model):
     token = models.CharField(max_length=10, unique=True)
 
     owner = models.ManyToManyField(CustomUser)
+
+    def __str__(self):
+        return self.name

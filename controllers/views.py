@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from rest_framework import viewsets
+from rest_framework import mixins
 from rest_framework import permissions
 from rest_framework.exceptions import APIException
 from rest_framework.authentication import TokenAuthentication
@@ -24,28 +25,43 @@ class ControllerViewSet(viewsets.ModelViewSet):
 
         return self.queryset
 
+
 class ControllerItemInfoViewSet(viewsets.ModelViewSet):
-    queryset = []
+    queryset = Controller.objects.none()
     serializer_class = ControllerItemInfoSerializer
-    permission_classes = (permissions.AllowAny)
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+    authentication_classes = (TokenAuthentication,)
 
     def get_queryset(self):
         user = self.request.user
         data = {}
+        result = []
 
         controllers = user.controller_set.all()
 
         for controller in controllers:
-            measurement = controller.actuatormeasurement_set.last()
-            data['controller'] = controller
-            data['zones'] = controller.zone_set.all()
-            data['reservoir_level'] = (
-                measurement.reservoir_level
-            )
-            data['water_consumption'] = (
-                measurement.water_consumption
-            )
+            measurement = controller.actuatorsmeasurement_set.last()
 
-            self.queryset.append(data)
+            if measurement:
+                data['controller'] = controller
+                data['zones'] = (
+                    [
+                        {
+                            'name': zone.name,
+                            'zip': zone.zip,
+                            'latitude': zone.latitude,
+                            'longitude': zone.longitude
+                        }
+                        for zone in controller.zone_set.all()
+                    ]
+                )
+                data['reservoir_level'] = (
+                    measurement.reservoir_level
+                )
+                data['water_consumption'] = (
+                    measurement.water_consumption
+                )
 
-        return self.queryset
+                result.append(data)
+
+        return result

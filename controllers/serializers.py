@@ -31,8 +31,8 @@ class ControllerSerializer(serializers.HyperlinkedModelSerializer):
         except Exception:
             return data
 
-        if controller and request.method == 'post':
-            if user not in controller.owner.all():
+        if controller and request.method == 'POST':
+            if request.user not in controller.owner.all():
                 controller.owner.add(request.user)
                 succefull_association = APIException(
                     {'detail': 'The user was associated with this controller.'}
