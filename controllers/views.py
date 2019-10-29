@@ -34,12 +34,12 @@ class ControllerItemInfoViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
-        data = {}
         result = []
 
         controllers = user.controller_set.all()
 
         for controller in controllers:
+            data = {}
             measurement = controller.actuatorsmeasurement_set.last()
 
             if measurement:
