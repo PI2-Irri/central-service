@@ -34,34 +34,37 @@ class ControllerItemInfoViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
-        data = {}
         result = []
 
         controllers = user.controller_set.all()
 
         for controller in controllers:
+            data = {}
             measurement = controller.actuatorsmeasurement_set.last()
 
+            data['controller'] = controller
+            data['zones'] = (
+                [
+                    {
+                        'name': zone.name,
+                        'zip': zone.zip,
+                        'latitude': zone.latitude,
+                        'longitude': zone.longitude
+                    }
+                    for zone in controller.zone_set.all()
+                ]
+            )
             if measurement:
-                data['controller'] = controller
-                data['zones'] = (
-                    [
-                        {
-                            'name': zone.name,
-                            'zip': zone.zip,
-                            'latitude': zone.latitude,
-                            'longitude': zone.longitude
-                        }
-                        for zone in controller.zone_set.all()
-                    ]
-                )
                 data['reservoir_level'] = (
                     measurement.reservoir_level
                 )
                 data['water_consumption'] = (
                     measurement.water_consumption
                 )
+            else:
+                data['reservoir_level'] = 0
+                data['water_consumption'] = 0
 
-                result.append(data)
+            result.append(data)
 
         return result
