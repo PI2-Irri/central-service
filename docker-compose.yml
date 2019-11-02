@@ -7,7 +7,7 @@ services:
     command: ["sh", "scripts/start.sh"]
     env_file: dev-env
     networks:
-      - central-service-network
+      - simulator-network
     ports:
       - 4001:4001
     volumes:
@@ -21,7 +21,7 @@ services:
     image: postgres:9.6
     env_file: dev-env
     networks:
-      - central-service-network
+      - simulator-network
     ports:
       - 5432:5432
     volumes:
@@ -31,6 +31,5 @@ volumes:
   central-pg-data: {}
 
 networks:
-  central-service-network:
-    name: central-service-network
-    driver: bridge
+  simulator-network:
+    external: true

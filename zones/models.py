@@ -7,6 +7,4 @@ class Zone(models.Model):
     zip = models.CharField(max_length=8)
     latitude = models.FloatField(default=0.0)
     longitude = models.FloatField(default=0.0)
-    precipitation = models.FloatField(default=0.0)
-    ambient_temperature = models.FloatField(default=0.0)
     controller = models.ForeignKey(Controller, on_delete=models.CASCADE)
