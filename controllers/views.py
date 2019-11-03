@@ -5,6 +5,7 @@ from rest_framework import permissions
 from rest_framework.exceptions import APIException
 from rest_framework.authentication import TokenAuthentication
 from .models import Controller
+from .models import ControllerSpecification
 from .models import CustomUser
 from .serializers import ControllerSerializer
 from .serializers import ControllerItemInfoSerializer
@@ -42,7 +43,9 @@ class ControllerItemInfoViewSet(viewsets.ModelViewSet):
             data = {}
             measurement = controller.actuatorsmeasurement_set.last()
 
-            data['controller'] = controller
+            data['controller'] = ControllerSpecification.objects.get(
+                controller=controller
+            )
             data['zones'] = (
                 [
                     {

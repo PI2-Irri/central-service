@@ -12,3 +12,11 @@ class Controller(models.Model):
 
     def __str__(self):
         return self.name
+
+class ControllerSpecification(models.Model):
+    controller = models.ForeignKey(Controller, on_delete=models.CASCADE)
+    owner = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    name = models.CharField(max_length=25, null=False, blank=False)
+
+    def __str__(self):
+        return self.name
