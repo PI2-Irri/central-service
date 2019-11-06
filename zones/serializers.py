@@ -4,6 +4,9 @@ from django.core.exceptions import ObjectDoesNotExist
 from .models import Controller
 from .models import Zone
 
+import pgeocode as pg
+
+
 
 class ZoneSerializer(serializers.HyperlinkedModelSerializer):
 
@@ -36,6 +39,15 @@ class ZoneSerializer(serializers.HyperlinkedModelSerializer):
             raise APIException(
                 {'detail': 'Token must be a sended.'}
             )
+        
+        try:
+            nomi = pg.Nominatim('br')
+            zipcode = validated_data.get('zip')[0:3] + '00-000'
+            data = nomi.query_postal_code(zipcode)
+        except:
+            raise APIException(
+                {'error': 'Unvalid zipcode'}
+            )
 
         try:
             controller = Controller.objects.get(
@@ -43,10 +55,10 @@ class ZoneSerializer(serializers.HyperlinkedModelSerializer):
             )
             zone = Zone.objects.create(
                 name=validated_data.get('name'),
-                zip=validated_data.get('zip'),
-                latitude=validated_data.get('latitude'),
-                longitude=validated_data.get('longitude'),
-                controller=controller
+                zip=zipcode,
+                controller=controller,
+                latitude=data['latitude'],
+                longitude=data['longitude']
             )
         except Controller.DoesNotExist as exception:
             raise APIException(
