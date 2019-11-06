@@ -39,12 +39,12 @@ class ZoneSerializer(serializers.HyperlinkedModelSerializer):
             raise APIException(
                 {'detail': 'Token must be a sended.'}
             )
-        
+
         try:
             nomi = pg.Nominatim('br')
             zipcode = validated_data.get('zip')[0:3] + '00-000'
             data = nomi.query_postal_code(zipcode)
-        except:
+        except Exception as e:
             raise APIException(
                 {'error': 'Unvalid zipcode'}
             )
@@ -56,12 +56,12 @@ class ZoneSerializer(serializers.HyperlinkedModelSerializer):
                 token=token
             )
 
-            zone = controller.zone_set.filter(validated_data.get('name'))
+            zone = controller.zone_set.filter(name=validated_data.get('name'))
 
             if zone:
                 raise APIException(
                 {'error': 'Zone already registered'}
-            ) 
+            )
 
             zone = Zone.objects.create(
                 name=validated_data.get('name'),

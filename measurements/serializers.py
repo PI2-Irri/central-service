@@ -33,7 +33,5 @@ class ZoneMeasurementSerializer(serializers.HyperlinkedModelSerializer):
             model = ZoneMeasurement
             fields = (
                 'air_temperature',
-                'precipitation',
-                'ground_humidity',
-                'status_modules'
+                'precipitation'
             )
