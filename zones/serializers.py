@@ -16,6 +16,7 @@ class ZoneSerializer(serializers.HyperlinkedModelSerializer):
             'latitude',
             'longitude',
             'controller',
+            'is_active',
             'url'
         )
 
@@ -53,3 +54,26 @@ class ZoneSerializer(serializers.HyperlinkedModelSerializer):
             )
 
         return zone
+
+class ZonesInformationSerializer(serializers.HyperlinkedModelSerializer):
+    soil_temperature = serializers.FloatField(default=0.0)
+    air_temperature = serializers.FloatField(default=0.0)
+    precipitation = serializers.FloatField(default=0.0)
+    ground_humidity = serializers.FloatField(default=0.0)
+    status_modules = serializers.ListField()
+
+    class Meta:
+        model = Zone
+        fields = (
+            'name',
+            'zip',
+            'latitude',
+            'longitude',
+            'is_active',
+            'controller',
+            'soil_temperature',
+            'air_temperature',
+            'precipitation',
+            'ground_humidity',
+            'status_modules'
+        )
