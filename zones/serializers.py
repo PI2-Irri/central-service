@@ -49,10 +49,20 @@ class ZoneSerializer(serializers.HyperlinkedModelSerializer):
                 {'error': 'Unvalid zipcode'}
             )
 
+        request = self._kwargs.get('context')['request']
+
         try:
             controller = Controller.objects.get(
                 token=token
             )
+
+            zone = controller.zone_set.filter(validated_data.get('name'))
+
+            if zone:
+                raise APIException(
+                {'error': 'Zone already registered'}
+            ) 
+
             zone = Zone.objects.create(
                 name=validated_data.get('name'),
                 zip=zipcode,

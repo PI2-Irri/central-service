@@ -5,9 +5,11 @@ from rest_framework.exceptions import APIException
 from rest_framework.authentication import TokenAuthentication
 from .models import ActuatorsMeasurement
 from .models import ModulesMeasurement
+from .models import ZoneMeasurement
 from controllers.models import Controller
 from .serializers import ActuatorsMeasurementSerializer
 from .serializers import ModulesMeasurementSerializer
+from .serializers import ZoneMeasurementSerializer
 
 
 class ActuatorsMeasurementViewSet(mixins.RetrieveModelMixin,
@@ -72,3 +74,14 @@ class ModulesMeasurementViewSet(mixins.RetrieveModelMixin,
         )
 
         return self.queryset
+
+
+class ZoneMeasurementViewSet(mixins.RetrieveModelMixin,
+                                mixins.DestroyModelMixin,
+                                mixins.ListModelMixin,
+                                viewsets.GenericViewSet):
+    queryset = ZoneMeasurement.objects.none()
+    model = ZoneMeasurement
+    serializer_class = ZoneMeasurementSerializer
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+    authentication_classes = (TokenAuthentication,)

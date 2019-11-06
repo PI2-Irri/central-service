@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from .models import ActuatorsMeasurement
 from .models import ModulesMeasurement
+from .models import ZoneMeasurement
 
 class ActuatorsMeasurementSerializer(serializers.HyperlinkedModelSerializer):
 
@@ -16,7 +17,7 @@ class ActuatorsMeasurementSerializer(serializers.HyperlinkedModelSerializer):
         )
 
 
-class ModulesMeasurementSerializer():
+class ModulesMeasurementSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = ModulesMeasurement
@@ -26,3 +27,13 @@ class ModulesMeasurementSerializer():
             'battery_level',
             'module',
         )
+
+class ZoneMeasurementSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+            model = ZoneMeasurement
+            fields = (
+                'air_temperature',
+                'precipitation',
+                'ground_humidity',
+                'status_modules'
+            )
