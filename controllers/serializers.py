@@ -69,6 +69,7 @@ class ControllerSerializer(serializers.HyperlinkedModelSerializer):
             is_active=validated_data.get('is_active'),
             token=token
         )
+        self.to_internal_value(validated_data)
 
         return controller
 
