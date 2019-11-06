@@ -34,6 +34,10 @@ router.register(
     r'modules_measurements',
     measurements_views.ModulesMeasurementViewSet
 )
+router.register(
+    r'zones_info',
+    zone_views.ZonesInformationViewSet
+)
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
