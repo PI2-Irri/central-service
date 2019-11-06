@@ -46,6 +46,7 @@ class ControllerItemInfoViewSet(viewsets.ModelViewSet):
             data['controller'] = ControllerSpecification.objects.get(
                 controller=controller
             )
+            data['token'] = controller.token
             data['zones'] = (
                 [
                     {

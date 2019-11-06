@@ -39,7 +39,8 @@ class ControllerSerializer(serializers.HyperlinkedModelSerializer):
                 ControllerSpecification.objects.create(
                     owner=request.user,
                     controller=controller,
-                    name=data.get('name')
+                    name=data.get('name'),
+                    token=data.get('token')
                 )
 
                 succefull_association = APIException(
@@ -84,11 +85,13 @@ class ControllerItemInfoSerializer(serializers.HyperlinkedModelSerializer):
     controller = serializers.CharField()
     zones = serializers.ListField()
     reservoir_level = serializers.FloatField()
+    token = serializers.CharField()
 
     class Meta:
         model = Controller
         fields = (
             'controller',
             'zones',
-            'reservoir_level'
+            'reservoir_level',
+            'token'
         )
