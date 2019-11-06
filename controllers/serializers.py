@@ -39,8 +39,7 @@ class ControllerSerializer(serializers.HyperlinkedModelSerializer):
                 ControllerSpecification.objects.create(
                     owner=request.user,
                     controller=controller,
-                    name=data.get('name'),
-                    token=data.get('token')
+                    name=data.get('name')
                 )
 
                 succefull_association = APIException(
