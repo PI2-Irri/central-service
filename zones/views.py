@@ -6,6 +6,7 @@ from .models import Controller
 from .serializers import ZoneSerializer
 from .serializers import ZonesInformationSerializer
 from rest_framework.exceptions import APIException
+from operator import mul
 
 
 class ZoneViewSet(viewsets.ModelViewSet):
@@ -29,6 +30,8 @@ class ZonesInformationViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         token = self.request.query_params.get('token')
+        zone_name = self.request.query_params.get('zone_name')
+
         user = self.request.user
 
         try:
@@ -40,38 +43,60 @@ class ZonesInformationViewSet(viewsets.ModelViewSet):
                 {'error': 'Token not match with any controller.'}
             )
 
-        zones = controller.zones_set.all()
-        modules = controller.modules_set.all()
-        result = []
+        try:
+            zone = controller.zone_set.get(
+                name=zone_name
+            )
+            print(zone)
+        except Zone.DoesNotExist:
+            # raise APIException(
+            #
+            # )
+            return []
 
-        for zone in zones:
-            data = {}
+        modules = controller.module_set.all()
 
-            data['name'] = zone.name
-            data['zip'] = zone.zip
-            data['latitude'] = zone.latitude
-            data['longitude'] = zone.longitude
-            data['is_active'] = zone.is_active
-            data['controller'] = zone.controller
+        data = {}
 
-            if zone.is_active:
-                data['soil_temperature'] = 33.2
-                data['air_temperature'] = 35.7
-                data['precipitation'] = 10
-                data['ground_humidity'] = 21.0
-                data['status_modules'] = (
-                    [
+        data['name'] = zone.name
+        data['zip'] = zone.zip
+        data['latitude'] = zone.latitude
+        data['longitude'] = zone.longitude
+        data['is_active'] = zone.is_active
+        data['controller'] = zone.controller
+
+        measurement = zone.zonemeasurement_set.last()
+
+        if zone.is_active and measurement:
+            data['soil_temperature'] = 0
+            data['air_temperature'] = measurement.air_temperature
+            data['precipitation'] = measurement.precipitation
+            data['ground_humidity'] = 0
+            data['status_modules'] = []
+            valid_modules = 0
+
+            for module in modules:
+                if module.modulesmeasurement_set.last():
+                    data['soil_temperature'] += \
+                        module.modulesmeasurement_set.last()['temperature']
+                    data['ground_humidity'] += \
+                        module.modulesmeasurement_set.last()['ground_humidity']
+                    data['status_modules'].append(
                         module.modulesmeasurement_set.last()['battery_level']
-                        for module in modules
-                    ]
-                )
-            else:
-                data['soil_temperature'] = 0.0
-                data['air_temperature'] = 0.0
-                data['precipitation'] = 0
-                data['ground_humidity'] = 0.0
-                data['status_modules'] = [0, 0, 0]
+                    )
+                    valid_modules += 1
 
-            result.append(data)
+            data['soil_temperatures'] /= valid_modules
+            data['ground_humidity'] /= valid_modules
+        else:
+            data['soil_temperature'] = 0.0
+            data['air_temperature'] = 0.0
+            data['precipitation'] = 0
+            data['ground_humidity'] = 0.0
+            data['status_modules'] = []
 
-        return result
+            for module in modules:
+                if module.modulesmeasurement_set.last():
+                    data['status_modules'].append(0)
+
+        return [data]
