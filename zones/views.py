@@ -29,6 +29,7 @@ class ZonesInformationViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         token = self.request.query_params.get('token')
+        print(token)
         user = self.request.user
 
         try:
@@ -40,8 +41,8 @@ class ZonesInformationViewSet(viewsets.ModelViewSet):
                 {'error': 'Token not match with any controller.'}
             )
 
-        zones = controller.zones_set.all()
-        modules = controller.modules_set.all()
+        zones = controller.zone_set.all()
+        modules = controller.module_set.all()
         result = []
 
         for zone in zones:
