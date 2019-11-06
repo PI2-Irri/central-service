@@ -5,6 +5,7 @@ from .models import Zone
 from .models import Controller
 from .serializers import ZoneSerializer
 from .serializers import ZonesInformationSerializer
+from rest_framework.exceptions import APIException
 
 
 class ZoneViewSet(viewsets.ModelViewSet):
