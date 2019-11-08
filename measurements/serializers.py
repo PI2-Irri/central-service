@@ -28,10 +28,11 @@ class ModulesMeasurementSerializer(serializers.HyperlinkedModelSerializer):
             'module',
         )
 
+
 class ZoneMeasurementSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
-            model = ZoneMeasurement
-            fields = (
-                'air_temperature',
-                'precipitation'
-            )
+        model = ZoneMeasurement
+        fields = (
+            'air_temperature',
+            'precipitation'
+        )
