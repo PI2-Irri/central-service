@@ -4,6 +4,7 @@ from .models import Module
 from controllers.utils import ControllerCommunication
 from measurements.models import ModulesMeasurement
 from rest_framework.exceptions import APIException
+from .models import Controller
 
 
 class ModuleSerializer(serializers.HyperlinkedModelSerializer):
