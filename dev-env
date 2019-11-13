@@ -6,4 +6,3 @@ POSTGRES_PORT=5432
 PYTHONUNBUFFERED=1
 ENVIRONMENT=development
 SECRET_KEY==wv-tcyh^*5-v7%hxvmzj#^^y6%z@s*np+@2-(faz&g#1nz39y
-MODULE_URL=http://localhost:3000/module_measurements/
