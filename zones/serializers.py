@@ -5,6 +5,7 @@ from .models import Controller
 from .models import Zone
 
 import pgeocode as pg
+import math
 
 
 
@@ -49,6 +50,14 @@ class ZoneSerializer(serializers.HyperlinkedModelSerializer):
                 {'error': 'Unvalid zipcode'}
             )
 
+        latitude = 0.0
+        longitude = 0.0
+
+        if math.isnan(data['latitude']) == False:
+            latitude = data['latitude']
+        if math.isnan(data['longitude']) == False:
+            longitude = data['longitude']
+
         request = self._kwargs.get('context')['request']
 
         try:
@@ -60,15 +69,15 @@ class ZoneSerializer(serializers.HyperlinkedModelSerializer):
 
             if zone:
                 raise APIException(
-                {'error': 'Zone already registered'}
-            )
+                    {'error': 'Zone already registered'}
+                )
 
             zone = Zone.objects.create(
                 name=validated_data.get('name'),
                 zip=zipcode,
                 controller=controller,
-                latitude=data['latitude'],
-                longitude=data['longitude']
+                latitude=latitude,
+                longitude=longitude
             )
         except Controller.DoesNotExist as exception:
             raise APIException(
