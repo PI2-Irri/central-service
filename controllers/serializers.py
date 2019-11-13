@@ -7,6 +7,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from .utils import ControllerCommunication
 from modules.models import Module
 from modules.serializers import ModuleSerializer
+import os
 
 
 class ControllerSerializer(serializers.HyperlinkedModelSerializer):
@@ -80,6 +81,7 @@ class ControllerSerializer(serializers.HyperlinkedModelSerializer):
 
         return instance
 
+
 class ControllerItemInfoSerializer(serializers.HyperlinkedModelSerializer):
     controller = serializers.CharField()
     zones = serializers.ListField()
@@ -94,3 +96,36 @@ class ControllerItemInfoSerializer(serializers.HyperlinkedModelSerializer):
             'reservoir_level',
             'token'
         )
+
+
+class ControllerCustomRegistration(serializers.HyperlinkedModelSerializer):
+    validation_key = serializers.CharField()
+
+    class Meta:
+        model = Controller
+        fields = (
+            'name',
+            'is_active',
+            'validation_key',
+            'token'
+        )
+
+    def to_internal_value(self, data):
+        if data.get('validation_key') == os.getenv('SECRET_KEY'):
+            return data
+        else:
+            exception = APIException(
+                {'error': 'Validation key not match with registration key.'}
+            )
+            exception.status_code = 403
+
+            raise exception
+
+    def create(self, validated_data):
+        controller = Controller.objects.create(
+            name=validated_data.get('name'),
+            is_active=True,
+            token=validated_data.get('token')
+        )
+
+        return controller

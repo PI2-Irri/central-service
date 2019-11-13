@@ -6,6 +6,7 @@ from rest_framework.routers import DefaultRouter
 
 from controllers.views import ControllerViewSet
 from controllers.views import ControllerItemInfoViewSet
+from controllers.views import ControllerCustomRegistrationViewSet
 from controllers import views as controller_views
 from zones.views import ZoneViewSet
 from zones.views import ZonesInformationViewSet
@@ -22,6 +23,11 @@ router.register(
     basename='controllers_info'
 )
 router.register(r'controllers', ControllerViewSet)
+router.register(
+    r'controller_regs',
+    ControllerCustomRegistrationViewSet,
+    basename='controller_regs'
+)
 router.register(r'zones', ZoneViewSet)
 router.register(
     r'modules',
