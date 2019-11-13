@@ -9,6 +9,7 @@ from .models import ControllerSpecification
 from .models import CustomUser
 from .serializers import ControllerSerializer
 from .serializers import ControllerItemInfoSerializer
+from .serializers import ControllerCustomRegistration
 
 
 class ControllerViewSet(viewsets.ModelViewSet):
@@ -72,3 +73,9 @@ class ControllerItemInfoViewSet(viewsets.ModelViewSet):
             result.append(data)
 
         return result
+
+
+class ControllerCustomRegistrationViewSet(viewsets.ModelViewSet):
+    queryset = Controller.objects.none()
+    serializer_class = ControllerCustomRegistration
+    permission_classes = (permissions.AllowAny,)
