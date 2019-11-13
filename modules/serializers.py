@@ -26,17 +26,16 @@ class ModuleSerializer(serializers.HyperlinkedModelSerializer):
                 token=token
             )
             module = Module.objects.get(
-                rf_address=rf_address,
-                controller=controller
-            )
-        except Module.DoesNotExist:
-            module = Module.objects.create(
-                rf_address=rf_address,
+                rf_address=int(rf_address),
                 controller=controller
             )
         except Controller.DoesNotExist:
             raise APIException(
                 {'detail': 'Token not match with any controller.'}
+            )
+        except ValueError:
+            raise APIException(
+                {'error': 'Field rf_address is not a integer field.'}
             )
 
         return module
