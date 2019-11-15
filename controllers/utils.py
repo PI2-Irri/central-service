@@ -2,40 +2,58 @@ import os
 import requests
 from .exceptions import ControllerTokenException
 from controllers.models import Controller
+from measurements.models import ActuatorsMeasurement
+from measurements.models import ModulesMeasurement
+from measurements.models import ZoneMeasurement
+
 
 class ControllerCommunication():
 
-    @staticmethod
-    def check_token(token, ip_address):
-        response = requests.get(ip_address, params={"token": token})
+    def make_decision(self):
+        """
+        Precisa de:
+            - temperatura do ar (ZoneMeasurement)
+            - precipitação (ZoneMeasurement)
+            - temperatura do solo (ModulesMeasurement)
+            - umidade do solo (ModulesMeasurement)
+            - nível do reservatório (ActuatorsMeasurement)
+        """
 
-        if response.status_code != 200:
-            raise ControllerTokenException
-
-    @staticmethod
-    def get_controller_modules(token, ip_address):
-        ip = ip_address + "modules/"
-
-        response = requests.get(ip, params={"token": token})
-
-        return response.json()
-
-    @staticmethod
-    def collect_all_measurements():
         controllers = Controller.objects.all()
 
-        #TODO - put try except
         for controller in controllers:
-            response = requests.get(
-                os.getenv(
-                    "MODULE_URL",
-                    "http://localhost:3000/module_measurements"
-                ),
-                params={"token": controller.token}
-            ).json()
+            if controller.is_active:
+                actuator_measurements = controller.actuatorsmeasurement_set.last()
+                zone_measurements = controller.zonemeasurement_set.last()
+                modules_measurements = controller.modulesmeasurement_set.objects.last()
 
-    @staticmethod
-    def collect_from_controller(ip_address):
-        response = requests.get(ip_address).json()
+                if actuator_measurements:
+                    reservoir_level = reservoir_level['precipitation']
 
-        return response
+                if zone_measurements:
+                    precipitation = zone_measurements['precipitation']
+                    air_temperature = zone_measurements['air_temperature']
+
+                if modules_measurements:
+                    ground_humidity = modules_measurements['ground_humidity']
+                    soil_temperature = modules_measurements['temperature']
+
+                if reservoir_level:
+                    if precipitation:
+                        controller.permit_irrigation = True
+                    else:
+                        if ground_humidity > 50:
+                            if soil_temperature > 33.4 and air_temperature > 35:
+                                if ground_humidity < 60:
+                                    controller.permit_irrigation = True
+                                else:
+                                    pass
+                            else:
+                                pass
+                        else:
+                            controller.permit_irrigation = True
+                else:
+                    pass
+
+    def allow_irrigation(self):
+        pass
