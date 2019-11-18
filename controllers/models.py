@@ -5,13 +5,15 @@ from django.core.validators import RegexValidator
 
 class Controller(models.Model):
     name = models.CharField(max_length=25)
-    is_active = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=False, blank=True)
     token = models.CharField(max_length=10, unique=True)
+    permit_irrigation = models.BooleanField(default=False, blank=True)
 
     owner = models.ManyToManyField(CustomUser)
 
     def __str__(self):
         return self.name
+
 
 class ControllerSpecification(models.Model):
     controller = models.ForeignKey(Controller, on_delete=models.CASCADE)
