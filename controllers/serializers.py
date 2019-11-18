@@ -65,11 +65,18 @@ class ControllerSerializer(serializers.HyperlinkedModelSerializer):
     def create(self, validated_data):
         token = validated_data.get('token')
 
-        controller = Controller.objects.create(
-            name=validated_data.get('name'),
-            is_active=validated_data.get('is_active'),
-            token=token
-        )
+        if validated_data.get('is_active'):
+            controller = Controller.objects.create(
+                name=validated_data.get('name'),
+                is_active=validated_data.get('is_active'),
+                token=token
+            )
+        else:
+            controller = Controller.objects.create(
+                name=validated_data.get('name'),
+                token=token
+            )
+
         self.to_internal_value(validated_data)
 
         return controller
