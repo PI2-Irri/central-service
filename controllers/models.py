@@ -6,8 +6,10 @@ from django.core.validators import RegexValidator
 class Controller(models.Model):
     name = models.CharField(max_length=25)
     is_active = models.BooleanField(default=False, blank=True)
-    token = models.CharField(max_length=10, unique=True)
+    token = models.CharField(max_length=10, unique=True, primary_key=True)
     permit_irrigation = models.BooleanField(default=False, blank=True)
+    requested = models.BooleanField(default=True, blank=True)
+    time_to_irrigate = models.IntegerField(default=0.0, blank=True)
 
     owner = models.ManyToManyField(CustomUser)
 
