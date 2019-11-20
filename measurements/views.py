@@ -12,10 +12,7 @@ from .serializers import ModulesMeasurementSerializer
 from .serializers import ZoneMeasurementSerializer
 
 
-class ActuatorsMeasurementViewSet(mixins.RetrieveModelMixin,
-                                  mixins.DestroyModelMixin,
-                                  mixins.ListModelMixin,
-                                  viewsets.GenericViewSet):
+class ActuatorsMeasurementViewSet(viewsets.ModelViewSet):
     queryset = ActuatorsMeasurement.objects.none()
     model = ActuatorsMeasurement
     serializer_class = ActuatorsMeasurementSerializer
@@ -44,10 +41,7 @@ class ActuatorsMeasurementViewSet(mixins.RetrieveModelMixin,
         return self.queryset
 
 
-class ModulesMeasurementViewSet(mixins.RetrieveModelMixin,
-                                mixins.DestroyModelMixin,
-                                mixins.ListModelMixin,
-                                viewsets.GenericViewSet):
+class ModulesMeasurementViewSet(viewsets.ModelViewSet):
     queryset = ModulesMeasurement.objects.none()
     model = ModulesMeasurement
     serializer_class = ModulesMeasurementSerializer
@@ -76,10 +70,7 @@ class ModulesMeasurementViewSet(mixins.RetrieveModelMixin,
         return self.queryset
 
 
-class ZoneMeasurementViewSet(mixins.RetrieveModelMixin,
-                                mixins.DestroyModelMixin,
-                                mixins.ListModelMixin,
-                                viewsets.GenericViewSet):
+class ZoneMeasurementViewSet(viewsets.ModelViewSet):
     queryset = ZoneMeasurement.objects.none()
     model = ZoneMeasurement
     serializer_class = ZoneMeasurementSerializer
