@@ -16,9 +16,11 @@ class ControllerSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Controller
         fields = (
-            'id',
             'name',
             'is_active',
+            'requested',
+            'time_to_irrigate',
+            'permit_irrigation',
             'token',
             'owner',
             'url'
@@ -28,7 +30,7 @@ class ControllerSerializer(serializers.HyperlinkedModelSerializer):
         controller = None
 
         try:
-            controller = Controller.objects.get(token=data.get('token'))
+            controller = Controller.objects.get(token__in=[data.get('token')])
             request = self._kwargs.get('context')['request']
         except Exception:
             return data
@@ -82,9 +84,26 @@ class ControllerSerializer(serializers.HyperlinkedModelSerializer):
         return controller
 
     def update(self, instance, validated_data):
-        ControllerSpecification.objects.update(
-            name=validated_data.get('name')
-        )
+        request = self._kwargs.get('context')['request']
+        # print("*"*100)
+        # print(instance.__dict__)
+        # try:
+        #     controller = ControllerSpecification.objects.get(
+        #         name=validated_data.get('name'),
+        #         owner=request.user
+        #     )
+        # except Controller.DoesNotExist:
+        #     raise APIException(
+        #         {'detail': 'Name does not match with any controller.'}
+        #     )
+
+        if validated_data.get('name'):
+            controller = ControllerSpecification.objects.get(
+                name=instance.__dict__['name']
+            )
+            controller.save(update_fields={'name': validated_data.get('name')})
+
+        instance.save(update_fields=(validated_data))
 
         return instance
 
