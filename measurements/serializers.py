@@ -86,8 +86,9 @@ class ModulesMeasurementSerializer(serializers.HyperlinkedModelSerializer):
                 {'error': 'Token does not match with any controller.'}
             )
         except Module.DoesNotExist:
-            raise APIException(
-                {'error': 'RF Address does not match with any module.'}
+            module = Module.objects.create(
+                rf_address=validated_data.get('rf_address'),
+                controller=controller
             )
 
         measurement = ModulesMeasurement.objects.create(
