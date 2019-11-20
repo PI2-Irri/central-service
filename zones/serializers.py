@@ -118,3 +118,11 @@ class ZonesInformationSerializer(serializers.HyperlinkedModelSerializer):
             'ground_humidity',
             'status_modules'
         )
+
+class ActiveZoneSerializer(serializers.HyperlinkedModelSerializer):
+    model = Zone
+    fields = (
+        'status',
+        'name',
+        'token'
+    )
