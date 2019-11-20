@@ -7,7 +7,8 @@ from rest_framework.routers import DefaultRouter
 from controllers.views import ControllerViewSet
 from controllers.views import ControllerItemInfoViewSet
 from controllers import views as controller_views
-from zones import views as zone_views
+from zones.views import ZoneViewSet
+from zones.views import ZonesInformationViewSet
 from measurements import views as measurements_views
 from modules import views as modules_views
 
@@ -21,7 +22,7 @@ router.register(
     basename='controllers_info'
 )
 router.register(r'controllers', ControllerViewSet)
-router.register(r'zones', zone_views.ZoneViewSet)
+router.register(r'zones', ZoneViewSet)
 router.register(
     r'modules',
     modules_views.ModuleViewSet
@@ -33,6 +34,11 @@ router.register(
 router.register(
     r'modules_measurements',
     measurements_views.ModulesMeasurementViewSet
+)
+router.register(
+    r'zones_info',
+    ZonesInformationViewSet,
+    basename='zones_info'
 )
 
 urlpatterns = [

@@ -7,4 +7,5 @@ class Zone(models.Model):
     zip = models.CharField(max_length=8)
     latitude = models.FloatField(default=0.0)
     longitude = models.FloatField(default=0.0)
+    is_active = models.BooleanField(default=False)
     controller = models.ForeignKey(Controller, on_delete=models.CASCADE)

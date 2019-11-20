@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import Controller
+from .models import ControllerSpecification
 from .exceptions import ControllerTokenException
 from rest_framework.exceptions import APIException
 from django.core.exceptions import ObjectDoesNotExist
@@ -34,6 +35,13 @@ class ControllerSerializer(serializers.HyperlinkedModelSerializer):
         if controller and request.method == 'POST':
             if request.user not in controller.owner.all():
                 controller.owner.add(request.user)
+
+                ControllerSpecification.objects.create(
+                    owner=request.user,
+                    controller=controller,
+                    name=data.get('name')
+                )
+
                 succefull_association = APIException(
                     {'detail': 'The user was associated with this controller.'}
                 )
@@ -56,34 +64,33 @@ class ControllerSerializer(serializers.HyperlinkedModelSerializer):
     def create(self, validated_data):
         token = validated_data.get('token')
 
-        try:
-            controller = Controller(
-                name=validated_data.get('name'),
-                is_active=validated_data.get('is_active'),
-                token=token
-            )
-            controller.save()
-            controller.owner.add(validated_data.get('owner'))
-        except Exception:
-            controller = Controller.objects.get(
-                name=validated_data.get('name'),
-                is_active=validated_data.get('is_active'),
-                token=token
-            )
-
+        controller = Controller.objects.create(
+            name=validated_data.get('name'),
+            is_active=validated_data.get('is_active'),
+            token=token
+        )
+        self.to_internal_value(validated_data)
 
         return controller
 
+    def update(self, instance, validated_data):
+        ControllerSpecification.objects.update(
+            name=validated_data.get('name')
+        )
+
+        return instance
 
 class ControllerItemInfoSerializer(serializers.HyperlinkedModelSerializer):
     controller = serializers.CharField()
     zones = serializers.ListField()
     reservoir_level = serializers.FloatField()
+    token = serializers.CharField()
 
     class Meta:
         model = Controller
         fields = (
             'controller',
             'zones',
-            'reservoir_level'
+            'reservoir_level',
+            'token'
         )
