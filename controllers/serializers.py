@@ -45,12 +45,7 @@ class ControllerSerializer(serializers.HyperlinkedModelSerializer):
                     name=data.get('name')
                 )
 
-                succefull_association = APIException(
-                    {'detail': 'The user was associated with this controller.'}
-                )
-                succefull_association.status_code = 200
-
-                raise succefull_association
+                return data
             else:
                 invalid_association = APIException(
                     {
@@ -67,36 +62,29 @@ class ControllerSerializer(serializers.HyperlinkedModelSerializer):
     def create(self, validated_data):
         token = validated_data.get('token')
 
-        if validated_data.get('is_active'):
-            controller = Controller.objects.create(
-                name=validated_data.get('name'),
-                is_active=validated_data.get('is_active'),
-                token=token
-            )
-        else:
-            controller = Controller.objects.create(
-                name=validated_data.get('name'),
-                token=token
-            )
+        if token:
+            try:
+                controller = Controller.objects.get(
+                    token=validated_data.get('token')
+                )
+            except Controller.DoesNotExist:
+                if validated_data.get('is_active'):
+                    controller = Controller.objects.create(
+                        name=validated_data.get('name'),
+                        is_active=validated_data.get('is_active'),
+                        token=token
+                    )
+                else:
+                    controller = Controller.objects.create(
+                        name=validated_data.get('name'),
+                        token=token
+                    )
 
-        self.to_internal_value(validated_data)
+                self.to_internal_value(validated_data)
 
         return controller
 
     def update(self, instance, validated_data):
-        request = self._kwargs.get('context')['request']
-        # print("*"*100)
-        # print(instance.__dict__)
-        # try:
-        #     controller = ControllerSpecification.objects.get(
-        #         name=validated_data.get('name'),
-        #         owner=request.user
-        #     )
-        # except Controller.DoesNotExist:
-        #     raise APIException(
-        #         {'detail': 'Name does not match with any controller.'}
-        #     )
-
         if validated_data.get('name'):
             controller = ControllerSpecification.objects.get(
                 name=instance.__dict__['name']
