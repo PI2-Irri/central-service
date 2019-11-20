@@ -6,8 +6,8 @@ from .models import Zone
 
 import pgeocode as pg
 import math
-
-
+import os
+import requests
 
 class ZoneSerializer(serializers.HyperlinkedModelSerializer):
 
@@ -72,6 +72,15 @@ class ZoneSerializer(serializers.HyperlinkedModelSerializer):
                     {'error': 'Zone already registered'}
                 )
 
+            try:
+                request = requests.post(os.getenv('WEATHER_URL') + '/locations/',
+                            data={'location_name':  data['place_name'], 'latitude': latitude, 'longitude': longitude})
+            except Exception:
+                raise APIException(
+                    {'error': 'Could not register'}
+                )
+
+
             zone = Zone.objects.create(
                 name=validated_data.get('name'),
                 zip=zipcode,
@@ -79,6 +88,7 @@ class ZoneSerializer(serializers.HyperlinkedModelSerializer):
                 latitude=latitude,
                 longitude=longitude
             )
+            
         except Controller.DoesNotExist as exception:
             raise APIException(
                 {'error': 'This token does not match with any controller.'}

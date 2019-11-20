@@ -6,14 +6,19 @@ services:
     build: .
     command: ["sh", "scripts/start.sh"]
     env_file: dev-env
-    networks:
-      - simulator-network
     ports:
       - 4001:4001
     volumes:
       - .:/central-service
     depends_on:
       - db
+    external_links:
+      - weather-api:weatherapi
+    environment:
+      WEATHER_URL: "http://weatherapi:4000"
+    networks:
+      - simulator-network
+      - weather-service-network
 
   db:
     container_name: central-db
@@ -32,4 +37,7 @@ volumes:
 
 networks:
   simulator-network:
+    external: true
+
+  weather-service-network:
     external: true
