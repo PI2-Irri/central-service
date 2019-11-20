@@ -18,9 +18,9 @@ class ControllerSerializer(serializers.HyperlinkedModelSerializer):
         fields = (
             'name',
             'is_active',
-            'requested',
-            'time_to_irrigate',
-            'permit_irrigation',
+            'read',
+            'timer',
+            'status',
             'token',
             'owner',
             'url'
