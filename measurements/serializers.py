@@ -3,6 +3,7 @@ from .models import ActuatorsMeasurement
 from .models import ModulesMeasurement
 from .models import ZoneMeasurement
 from .models import Controller
+from modules.models import Module
 from rest_framework.exceptions import APIException
 from django.core.exceptions import ObjectDoesNotExist
 
@@ -54,7 +55,8 @@ class ModulesMeasurementSerializer(serializers.HyperlinkedModelSerializer):
         fields = (
             'temperature',
             'ground_humidity',
-            'battery_level'
+            'battery_level',
+            'module'
         )
 
     def to_internal_value(self, data):
