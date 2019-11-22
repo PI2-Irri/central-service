@@ -7,6 +7,7 @@ from .serializers import ZoneSerializer
 from .serializers import ZonesInformationSerializer
 from rest_framework.exceptions import APIException
 from operator import mul
+from rest_framework.decorators import action
 
 
 class ZoneViewSet(viewsets.ModelViewSet):
@@ -52,10 +53,6 @@ class ZonesInformationViewSet(viewsets.ModelViewSet):
             print(zone)
         except Zone.DoesNotExist:
             raise APIException({'detail': 'There is no zone associated with this user'})
-            # # raise APIException(
-            # #
-            # # )
-            # return []
 
         modules = controller.module_set.all()
 
@@ -103,3 +100,27 @@ class ZonesInformationViewSet(viewsets.ModelViewSet):
                     data['status_modules'].append(0)
 
         return [data]
+
+    @action(detail=True, methods=['post'])
+    def active_zone(self, request):
+        serializer_class = ActiveZoneSerializer(data=request.data)
+
+        if serializer_class.is_valid():
+            zones = Zone.objects.filter(is_active=True)
+
+            for zone in zones:
+                zone.is_active = False
+                zone.save()
+
+            zone = Zone.objects.get(name=request.data['name'])
+            zone.is_active = True
+            zone.save()
+
+            if request.data['status'] == True:
+                controller = Controller.objects.get(token=request.data['token'])
+                controller.status = True
+                controller.save()
+        else:
+            raise APIException(
+                {'error': 'Invalid fields'}
+            )
