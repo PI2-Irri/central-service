@@ -16,6 +16,7 @@ class ModulesMeasurement(models.Model):
 
     module = models.ForeignKey(Module, on_delete=models.CASCADE)
 
+
 class ZoneMeasurement(models.Model):
     air_temperature = models.FloatField(default=0.0)
     precipitation = models.FloatField(default=0.0)

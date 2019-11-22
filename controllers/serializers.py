@@ -91,7 +91,21 @@ class ControllerSerializer(serializers.HyperlinkedModelSerializer):
             )
             controller.save(update_fields={'name': validated_data.get('name')})
 
-        instance.save(update_fields=(validated_data))
+        # Updates the status and timer fields,
+        # if any of them is changed them read=false
+        fields = ['status', 'timer']
+        for field in fields:
+            if not validated_data.get(field):
+                continue
+            exec('instance.%s = validated_data.get(field)' % (field))
+            instance.read = False
+
+        # Updates the read field of the controller
+        read = validated_data.get('read')
+        if read:
+            instance.read = read
+
+        instance.save()
 
         return instance
 
