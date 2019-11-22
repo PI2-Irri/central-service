@@ -120,6 +120,10 @@ REST_FRAMEWORK = {
     ),
 }
 
+CRON_CLASSES = [
+    'measurements.cronjob.WeatherMeasurementCronjob'
+]
+
 # Internationalization
 # https://docs.djangoproject.com/en/1.11/topics/i18n/
 
