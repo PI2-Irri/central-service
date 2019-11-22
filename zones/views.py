@@ -53,10 +53,6 @@ class ZonesInformationViewSet(viewsets.ModelViewSet):
             print(zone)
         except Zone.DoesNotExist:
             raise APIException({'detail': 'There is no zone associated with this user'})
-            # # raise APIException(
-            # #
-            # # )
-            # return []
 
         modules = controller.module_set.all()
 
@@ -107,7 +103,6 @@ class ZonesInformationViewSet(viewsets.ModelViewSet):
 
     @action(detail=True, methods=['post'])
     def active_zone(self, request):
-       
         serializer_class = ActiveZoneSerializer(data=request.data)
 
         if serializer_class.is_valid():
@@ -116,7 +111,7 @@ class ZonesInformationViewSet(viewsets.ModelViewSet):
             for zone in zones:
                 zone.is_active = False
                 zone.save()
-            
+
             zone = Zone.objects.get(name=request.data['name'])
             zone.is_active = True
             zone.save()
@@ -124,7 +119,7 @@ class ZonesInformationViewSet(viewsets.ModelViewSet):
             if request.data['status'] == True:
                 controller = Controller.objects.get(token=request.data['token'])
                 controller.status = True
-                controller.save()  
+                controller.save()
         else:
             raise APIException(
                 {'error': 'Invalid fields'}
