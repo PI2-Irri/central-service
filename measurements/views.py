@@ -7,6 +7,7 @@ from .models import ActuatorsMeasurement
 from .models import ModulesMeasurement
 from .models import ZoneMeasurement
 from controllers.models import Controller
+from modules.models import Module
 from .serializers import ActuatorsMeasurementSerializer
 from .serializers import ModulesMeasurementSerializer
 from .serializers import ZoneMeasurementSerializer
@@ -63,8 +64,12 @@ class ModulesMeasurementViewSet(viewsets.ModelViewSet):
                 {'error': 'Token does not match in database.'}
             )
 
-        self.queryset = self.model.objects.filter(
+        modules = Module.objects.filter(
             controller=controller
+        )
+
+        self.queryset = self.model.objects.filter(
+            module__in=modules
         )
 
         return self.queryset

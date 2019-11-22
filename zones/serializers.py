@@ -3,11 +3,11 @@ from rest_framework.exceptions import APIException
 from django.core.exceptions import ObjectDoesNotExist
 from .models import Controller
 from .models import Zone
-
 import pgeocode as pg
 import math
 import os
 import requests
+
 
 class ZoneSerializer(serializers.HyperlinkedModelSerializer):
 
@@ -88,7 +88,6 @@ class ZoneSerializer(serializers.HyperlinkedModelSerializer):
                 latitude=latitude,
                 longitude=longitude
             )
-            
         except Controller.DoesNotExist as exception:
             raise APIException(
                 {'error': 'This token does not match with any controller.'}
