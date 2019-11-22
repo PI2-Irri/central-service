@@ -3,6 +3,8 @@ from django.core.exceptions import ObjectDoesNotExist
 from .models import Module
 from controllers.utils import ControllerCommunication
 from measurements.models import ModulesMeasurement
+from rest_framework.exceptions import APIException
+from .models import Controller
 
 
 class ModuleSerializer(serializers.HyperlinkedModelSerializer):
@@ -17,33 +19,23 @@ class ModuleSerializer(serializers.HyperlinkedModelSerializer):
 
     def create(self, validated_data):
         rf_address = validated_data.get('rf_address')
-        controller = validated_data.get('controller')
+        token = validated_data.get('token')
 
         try:
+            controller = Controller.objects.get(
+                token=token
+            )
             module = Module.objects.get(
-                rf_address=rf_address,
+                rf_address=int(rf_address),
                 controller=controller
             )
-        except Module.DoesNotExist:
-            module = Module.objects.create(
-                rf_address=rf_address,
-                controller=controller
+        except Controller.DoesNotExist:
+            raise APIException(
+                {'detail': 'Token not match with any controller.'}
             )
-
-            measurements = ControllerCommunication.collect_from_controller(
-                'http://' + \
-                controller.ip_address + \
-                controller.port + \
-                'module_measurements/' + \
-                '?rf_address={}'.format(rf_address)
+        except ValueError:
+            raise APIException(
+                {'error': 'Field rf_address is not a integer field.'}
             )
-
-            for measurement in measurements:
-                ModulesMeasurement.objects.create(
-                    temperature=measurement['temperature'],
-                    ground_humidity=measurement['ground_humidity'],
-                    battery_level=measurement['battery_level'],
-                    module=module
-                )
 
         return module

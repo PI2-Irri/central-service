@@ -7,6 +7,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from .utils import ControllerCommunication
 from modules.models import Module
 from modules.serializers import ModuleSerializer
+import os
 
 
 class ControllerSerializer(serializers.HyperlinkedModelSerializer):
@@ -15,9 +16,11 @@ class ControllerSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Controller
         fields = (
-            'id',
             'name',
             'is_active',
+            'read',
+            'timer',
+            'status',
             'token',
             'owner',
             'url'
@@ -27,7 +30,7 @@ class ControllerSerializer(serializers.HyperlinkedModelSerializer):
         controller = None
 
         try:
-            controller = Controller.objects.get(token=data.get('token'))
+            controller = Controller.objects.get(token__in=[data.get('token')])
             request = self._kwargs.get('context')['request']
         except Exception:
             return data
@@ -42,12 +45,7 @@ class ControllerSerializer(serializers.HyperlinkedModelSerializer):
                     name=data.get('name')
                 )
 
-                succefull_association = APIException(
-                    {'detail': 'The user was associated with this controller.'}
-                )
-                succefull_association.status_code = 200
-
-                raise succefull_association
+                return data
             else:
                 invalid_association = APIException(
                     {
@@ -64,21 +62,39 @@ class ControllerSerializer(serializers.HyperlinkedModelSerializer):
     def create(self, validated_data):
         token = validated_data.get('token')
 
-        controller = Controller.objects.create(
-            name=validated_data.get('name'),
-            is_active=validated_data.get('is_active'),
-            token=token
-        )
-        self.to_internal_value(validated_data)
+        if token:
+            try:
+                controller = Controller.objects.get(
+                    token=validated_data.get('token')
+                )
+            except Controller.DoesNotExist:
+                if validated_data.get('is_active'):
+                    controller = Controller.objects.create(
+                        name=validated_data.get('name'),
+                        is_active=validated_data.get('is_active'),
+                        token=token
+                    )
+                else:
+                    controller = Controller.objects.create(
+                        name=validated_data.get('name'),
+                        token=token
+                    )
+
+                self.to_internal_value(validated_data)
 
         return controller
 
     def update(self, instance, validated_data):
-        ControllerSpecification.objects.update(
-            name=validated_data.get('name')
-        )
+        if validated_data.get('name'):
+            controller = ControllerSpecification.objects.get(
+                name=instance.__dict__['name']
+            )
+            controller.save(update_fields={'name': validated_data.get('name')})
+
+        instance.save(update_fields=(validated_data))
 
         return instance
+
 
 class ControllerItemInfoSerializer(serializers.HyperlinkedModelSerializer):
     controller = serializers.CharField()
@@ -94,3 +110,36 @@ class ControllerItemInfoSerializer(serializers.HyperlinkedModelSerializer):
             'reservoir_level',
             'token'
         )
+
+
+class ControllerCustomRegistration(serializers.HyperlinkedModelSerializer):
+    validation_key = serializers.CharField()
+
+    class Meta:
+        model = Controller
+        fields = (
+            'name',
+            'is_active',
+            'validation_key',
+            'token'
+        )
+
+    def to_internal_value(self, data):
+        if data.get('validation_key') == os.getenv('SECRET_KEY'):
+            return data
+        else:
+            exception = APIException(
+                {'error': 'Validation key not match with registration key.'}
+            )
+            exception.status_code = 403
+
+            raise exception
+
+    def create(self, validated_data):
+        controller = Controller.objects.create(
+            name=validated_data.get('name'),
+            is_active=True,
+            token=validated_data.get('token')
+        )
+
+        return controller

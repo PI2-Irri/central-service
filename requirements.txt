@@ -5,3 +5,6 @@ psycopg2
 psycopg2-binary
 requests
 django-cors-headers
+pgeocode==0.1.2
+numpy
+pandas

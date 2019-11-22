@@ -5,13 +5,17 @@ from django.core.validators import RegexValidator
 
 class Controller(models.Model):
     name = models.CharField(max_length=25)
-    is_active = models.BooleanField(default=False)
-    token = models.CharField(max_length=10, unique=True)
+    is_active = models.BooleanField(default=False, blank=True)
+    token = models.CharField(max_length=10, unique=True, primary_key=True)
+    status = models.BooleanField(default=False, blank=True)
+    read = models.BooleanField(default=True, blank=True)
+    timer = models.IntegerField(default=0.0, blank=True)
 
     owner = models.ManyToManyField(CustomUser)
 
     def __str__(self):
         return self.name
+
 
 class ControllerSpecification(models.Model):
     controller = models.ForeignKey(Controller, on_delete=models.CASCADE)

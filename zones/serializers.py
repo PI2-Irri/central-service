@@ -4,6 +4,10 @@ from django.core.exceptions import ObjectDoesNotExist
 from .models import Controller
 from .models import Zone
 
+import pgeocode as pg
+import math
+import os
+import requests
 
 class ZoneSerializer(serializers.HyperlinkedModelSerializer):
 
@@ -38,16 +42,53 @@ class ZoneSerializer(serializers.HyperlinkedModelSerializer):
             )
 
         try:
+            nomi = pg.Nominatim('br')
+            zipcode = validated_data.get('zip')[0:3] + '00-000'
+            data = nomi.query_postal_code(zipcode)
+        except Exception as e:
+            raise APIException(
+                {'error': 'Unvalid zipcode'}
+            )
+
+        latitude = 0.0
+        longitude = 0.0
+
+        if math.isnan(data['latitude']) == False:
+            latitude = data['latitude']
+        if math.isnan(data['longitude']) == False:
+            longitude = data['longitude']
+
+        request = self._kwargs.get('context')['request']
+
+        try:
             controller = Controller.objects.get(
                 token=token
             )
+
+            zone = controller.zone_set.filter(name=validated_data.get('name'))
+
+            if zone:
+                raise APIException(
+                    {'error': 'Zone already registered'}
+                )
+
+            try:
+                request = requests.post(os.getenv('WEATHER_URL') + '/locations/',
+                            data={'location_name':  data['place_name'], 'latitude': latitude, 'longitude': longitude})
+            except Exception:
+                raise APIException(
+                    {'error': 'Could not register'}
+                )
+
+
             zone = Zone.objects.create(
                 name=validated_data.get('name'),
-                zip=validated_data.get('zip'),
-                latitude=validated_data.get('latitude'),
-                longitude=validated_data.get('longitude'),
-                controller=controller
+                zip=zipcode,
+                controller=controller,
+                latitude=latitude,
+                longitude=longitude
             )
+            
         except Controller.DoesNotExist as exception:
             raise APIException(
                 {'error': 'This token does not match with any controller.'}
@@ -77,3 +118,11 @@ class ZonesInformationSerializer(serializers.HyperlinkedModelSerializer):
             'ground_humidity',
             'status_modules'
         )
+
+class ActiveZoneSerializer(serializers.HyperlinkedModelSerializer):
+    model = Zone
+    fields = (
+        'status',
+        'name',
+        'token'
+    )
