@@ -10,20 +10,21 @@ class ScheduleSerializer(serializers.HyperlinkedModelSerializer):
         model = Schedule
         fields = (
             'id',
-            'period',
-            'controller',
+            'zone',
+            'schedule',
             'url'
         )
 
 
 class SchedulesFromController(serializers.HyperlinkedModelSerializer):
-    schedules = models.ListField()
-    zone_active = models.CharField()
+    schedule = serializers.ListField(default=[])
+    attr = serializers.JSONField()
+    zone = serializers.CharField()
 
     class Meta:
         model = Schedule
         fields = (
-            'controller',
-            'schedules',
-            'zone_active'
+            'zone',
+            'attr',
+            'schedule'
         )

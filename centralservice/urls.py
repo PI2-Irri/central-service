@@ -12,6 +12,7 @@ from zones.views import ZoneViewSet
 from zones.views import ZonesInformationViewSet
 from measurements import views as measurements_views
 from modules import views as modules_views
+from schedules.views import SchedulesFromControllerViewSet
 
 from users.views import CustomUserViewSet
 
@@ -45,6 +46,11 @@ router.register(
     r'zones_info',
     ZonesInformationViewSet,
     basename='zones_info'
+)
+router.register(
+    r'schedules_info',
+    SchedulesFromControllerViewSet,
+    basename='schedules_info'
 )
 
 urlpatterns = [
