@@ -6,6 +6,14 @@ from rest_framework.authentication import TokenAuthentication
 from .models import Schedule
 from controllers.models import Controller
 from .serializers import SchedulesFromController
+from .serializers import ScheduleSerializer
+
+
+class SchedulesViewSet(viewsets.ModelViewSet):
+    queryset = Schedule.objects.none()
+    serializer_class = ScheduleSerializer
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+    authentication_classes = (TokenAuthentication,)
 
 
 class SchedulesFromControllerViewSet(viewsets.ModelViewSet):
