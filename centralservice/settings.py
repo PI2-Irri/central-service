@@ -48,7 +48,8 @@ INSTALLED_APPS = [
     'controllers',
     'zones',
     'modules',
-    'measurements'
+    'measurements',
+    'schedules'
 ]
 
 MIDDLEWARE = [

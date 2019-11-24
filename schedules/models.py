@@ -1,6 +1,7 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
 from django.db import models
+from zones.models import Zone
 
-# Create your models here.
+
+class Schedule(models.Model):
+    schedule = models.DateTimeField()
+    zone = models.ForeignKey(Zone, on_delete=models.CASCADE)
