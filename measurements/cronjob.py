@@ -12,7 +12,7 @@ class WeatherMeasurementCronjob(CronJobBase):
     code = 'measurements.cronjob.WeatherMeasurementCronJob'
 
     def do(self):
-        
+
         zones = Zone.objects.filter(is_active=True)
 
         for zone in zones:
@@ -25,7 +25,7 @@ class WeatherMeasurementCronjob(CronJobBase):
             air_temperature = None
             precipitation = None
 
-            if latitude == 0 or longitude == 0:  
+            if latitude == 0 and longitude == 0:
                 response_air = requests.get(os.getenv('WEATHER_URL') + '/minutely_measurement/',
                             data={'location_name':  zone.location}).json()
                 response_forecast = requests.get(os.getenv('WEATHER_URL') + '/forecast_measurement/',
@@ -35,21 +35,23 @@ class WeatherMeasurementCronjob(CronJobBase):
                             data={'latitude':  zone.latitude, 'longitude': zone.longitude}).json()
                 response_forecast = requests.get(os.getenv('WEATHER_URL') + '/forecast_measurement/',
                             data={'latitude':  zone.latitude, 'longitude': zone.longitude}).json()
-            
-            if response_air.status_code == 200:
-                if response_air:
-                    air_temperature = response['temperature']
-                else:
-                    return  
 
-            if response_forecast.status_code == 200:
-                if response_forecast:
-                    precipitation = response['rain_precipitation'] if response_forecast['rain_precipitation'] else 0
-                else:
-                    return           
+            if response_air != []:
+                air_temperature = response_air[0]['temperature']
+            else:
+                print('Error in /minutely_measurement/ collection at {}'.format(datetime.now()))
+                return
 
-            ZoneMeasurement.objects.create(
+            if response_forecast != []:
+                precipitation = response_forecast[0]['rain_precipitation'] if response_forecast[0]['rain_precipitation'] else 0
+            else:
+                print('Error in /forecast_measurement/ collection at {}'.format(datetime.now()))
+                return
+
+            measurement = ZoneMeasurement.objects.create(
                 air_temperature=air_temperature,
                 precipitation=precipitation,
                 zone=zone
             )
+
+            print('Measurement collection: {}'.format(measurement))
