@@ -71,7 +71,7 @@ class ModulesMeasurementViewSet(viewsets.ModelViewSet):
 
 
 class ZoneMeasurementViewSet(viewsets.ModelViewSet):
-    queryset = ZoneMeasurement.objects.none()
+    queryset = ZoneMeasurement.objects.all()
     model = ZoneMeasurement
     serializer_class = ZoneMeasurementSerializer
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
