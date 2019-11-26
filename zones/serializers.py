@@ -19,6 +19,7 @@ class ZoneSerializer(serializers.HyperlinkedModelSerializer):
             'zip',
             'latitude',
             'longitude',
+            'location',
             'controller',
             'is_active',
             'url'
@@ -85,6 +86,7 @@ class ZoneSerializer(serializers.HyperlinkedModelSerializer):
                 name=validated_data.get('name'),
                 zip=zipcode,
                 controller=controller,
+                location=data['place_name'],
                 latitude=latitude,
                 longitude=longitude
             )

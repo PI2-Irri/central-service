@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'corsheaders',
+    'django_cron',
     'users',
     'controllers',
     'zones',
@@ -119,6 +120,10 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.TokenAuthentication',
     ),
 }
+
+CRON_CLASSES = [
+    'measurements.cronjob.WeatherMeasurementCronjob'
+]
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.11/topics/i18n/
