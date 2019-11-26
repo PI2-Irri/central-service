@@ -20,7 +20,6 @@ class ModuleSerializer(serializers.HyperlinkedModelSerializer):
     def create(self, validated_data):
         rf_address = validated_data.get('rf_address')
         token = validated_data.get('token')
-
         try:
             controller = Controller.objects.get(
                 token=token

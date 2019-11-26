@@ -34,15 +34,23 @@ class ActuatorsMeasurementSerializer(serializers.HyperlinkedModelSerializer):
             controller = Controller.objects.get(
                 token=validated_data.get('token')
             )
+            zone = controller.zone_set.get(
+                is_active=True
+            )
         except Controller.DoesNotExist:
             raise APIException(
                 {'error': 'Token does not match with any controller.'}
+            )
+        except Zone.DoesNotExist:
+            raise APIException(
+                {'error': 'Zone not found'}
             )
 
         measurement = ActuatorsMeasurement.objects.create(
             water_consumption=int(validated_data.get('water_consumption')),
             reservoir_level=int(validated_data.get('reservoir_level')),
-            controller=controller
+            controller=controller,
+            zone=zone
         )
 
         return measurement
@@ -83,6 +91,9 @@ class ModulesMeasurementSerializer(serializers.HyperlinkedModelSerializer):
             module = controller.module_set.get(
                 rf_address=validated_data.get('rf_address')
             )
+            zone = controller.zone_set.get(
+                is_active=True
+            )
         except Controller.DoesNotExist:
             raise APIException(
                 {'error': 'Token does not match with any controller.'}
@@ -92,12 +103,17 @@ class ModulesMeasurementSerializer(serializers.HyperlinkedModelSerializer):
                 rf_address=validated_data.get('rf_address'),
                 controller=controller
             )
+        except Zone.DoesNotExist:
+            raise APIException(
+                {'error': 'Zone not found'}
+            )
 
         measurement = ModulesMeasurement.objects.create(
             temperature=float(validated_data.get('soil_temperature')),
             ground_humidity=int(validated_data.get('ground_humidity')),
             battery_level=int(validated_data.get('battery_level')),
-            module=module
+            module=module,
+            zone=zone
         )
 
         return measurement
