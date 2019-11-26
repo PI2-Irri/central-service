@@ -106,7 +106,8 @@ class ZonesInformationViewSet(viewsets.ModelViewSet):
         serializer_class = ActiveZoneSerializer(data=request.data)
 
         if serializer_class.is_valid():
-            zones = Zone.objects.filter(is_active=True)
+            controller = Controller.objects.get(token=request.data['token'])
+            zones = controller.zone_set.filter(is_active=True)
 
             for zone in zones:
                 zone.is_active = False
@@ -117,7 +118,6 @@ class ZonesInformationViewSet(viewsets.ModelViewSet):
             zone.save()
 
             if request.data['status'] == True:
-                controller = Controller.objects.get(token=request.data['token'])
                 controller.status = True
                 controller.save()
         else:
