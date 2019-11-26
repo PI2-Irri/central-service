@@ -4,7 +4,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from .models import Schedule
 from .models import Zone
 from controllers.models import Controller
-from datetime import datetime
+from django.utils.timezone import datetime
 
 
 class ScheduleSerializer(serializers.HyperlinkedModelSerializer):
