@@ -1,1 +1,2 @@
+* * * * * export $(cat /root/env | xargs) && python /central-service/manage.py runcrons measurements.cronjob.WeatherMeasurementCronjob >> /home/out_weather.log 2>&1
 # Necessary line at end of file to make cron valid

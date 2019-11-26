@@ -48,6 +48,10 @@ router.register(
     basename='zones_info'
 )
 router.register(
+    r'zones_measurements',
+    measurements_views.ZoneMeasurementViewSet
+)
+router.register(
     r'schedules_info',
     SchedulesFromControllerViewSet,
     basename='schedules_info'

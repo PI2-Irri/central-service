@@ -9,7 +9,7 @@ class Controller(models.Model):
     token = models.CharField(max_length=10, unique=True, primary_key=True)
     status = models.BooleanField(default=False, blank=True)
     read = models.BooleanField(default=True, blank=True)
-    timer = models.IntegerField(default=0.0, blank=True)
+    timer = models.IntegerField(default=150, blank=True)
 
     owner = models.ManyToManyField(CustomUser)
 
