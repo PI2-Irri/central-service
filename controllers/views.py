@@ -38,7 +38,8 @@ class ControllerItemInfoViewSet(viewsets.ModelViewSet):
         user = self.request.user
         result = []
 
-        controllers = user.controllerspecification_set.all()
+        controllers = user.controller_set.all()
+        controllers_spec = user.controllerspecification_set.all()
 
         for controller in controllers:
             data = {}

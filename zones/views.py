@@ -17,9 +17,7 @@ class ZoneViewSet(viewsets.ModelViewSet):
     authentication_classes = (TokenAuthentication,)
 
     def get_queryset(self):
-        print(100*"*")
         user = self.request.user
-        print(100*"*")
         self.queryset = user.controllers_set.all()
 
         return self.queryset
@@ -50,7 +48,6 @@ class ZonesInformationViewSet(viewsets.ModelViewSet):
             zone = controller.zone_set.get(
                 name=zone_name
             )
-            print(zone)
         except Zone.DoesNotExist:
             raise APIException({'detail': 'There is no zone associated with this user'})
 
