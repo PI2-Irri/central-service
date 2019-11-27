@@ -67,7 +67,7 @@ class ZonesInformationViewSet(viewsets.ModelViewSet):
 
         measurement = zone.zonemeasurement_set.last()
 
-        if zone.is_active and measurement:
+        if measurement:
             data['soil_temperature'] = 0
             data['air_temperature'] = measurement.air_temperature
             data['precipitation'] = measurement.precipitation
@@ -78,16 +78,17 @@ class ZonesInformationViewSet(viewsets.ModelViewSet):
             for module in modules:
                 if zone.modulesmeasurement_set.filter(module=module).last():
                     data['soil_temperature'] += \
-                        zone.modulesmeasurement_set.filter(module=module).last()['temperature']
+                        zone.modulesmeasurement_set.filter(module=module).last().temperature
                     data['ground_humidity'] += \
-                        zone.modulesmeasurement_set.filter(module=module).last()['ground_humidity']
+                        zone.modulesmeasurement_set.filter(module=module).last().ground_humidity
                     data['status_modules'].append(
-                        zone.modulesmeasurement_set.filter(module=module).last()['battery_level']
+                        zone.modulesmeasurement_set.filter(module=module).last().battery_level
                     )
                     valid_modules += 1
 
-            data['soil_temperatures'] /= valid_modules
-            data['ground_humidity'] /= valid_modules
+            if valid_modules:
+                data['soil_temperature'] /= valid_modules
+                data['ground_humidity'] /= valid_modules
         else:
             data['soil_temperature'] = 0.0
             data['air_temperature'] = 0.0
