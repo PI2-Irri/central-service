@@ -73,6 +73,16 @@ class ZonesInformationViewSet(viewsets.ModelViewSet):
             data['precipitation'] = measurement.precipitation
             data['ground_humidity'] = 0
             data['status_modules'] = []
+
+            water_consumption = (
+                zone.actuatorsmeasurement_set.filter(controller=controller)
+            )
+
+            if water_consumption:
+                data['water_consumption'] = water_consumption.last().water_consumption
+            else:
+                data['water_consumption'] = 0
+
             valid_modules = 0
 
             for module in modules:
@@ -95,6 +105,7 @@ class ZonesInformationViewSet(viewsets.ModelViewSet):
             data['precipitation'] = 0
             data['ground_humidity'] = 0.0
             data['status_modules'] = []
+            data['water_consumption'] = 0.0
 
             for module in modules:
                 if zone.modulesmeasurement_set.filter(module=module).last():

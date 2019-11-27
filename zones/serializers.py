@@ -107,6 +107,7 @@ class ZonesInformationSerializer(serializers.HyperlinkedModelSerializer):
     precipitation = serializers.FloatField(default=0.0)
     ground_humidity = serializers.FloatField(default=0.0)
     status_modules = serializers.ListField()
+    water_consumption = serializers.FloatField(default=0.0)
 
     class Meta:
         model = Zone
@@ -121,7 +122,8 @@ class ZonesInformationSerializer(serializers.HyperlinkedModelSerializer):
         'air_temperature',
         'precipitation',
         'ground_humidity',
-        'status_modules'
+        'status_modules',
+        'water_consumption'
         )
 
 class ActiveZoneSerializer(serializers.HyperlinkedModelSerializer):
