@@ -16,7 +16,14 @@ from rest_framework.status import HTTP_200_OK
 class ZoneViewSet(viewsets.ModelViewSet):
     queryset = Zone.objects.none()
     serializer_class = ZoneSerializer
-    permission_classes = (permissions.AllowAny,)
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+    authentication_classes = (TokenAuthentication,)
+
+    def get_queryset(self):
+        user = self.request.user
+        self.queryset = user.controller_set.all()
+
+        return self.queryset
 
 
 class ZonesInformationViewSet(viewsets.ModelViewSet):
@@ -42,7 +49,7 @@ class ZonesInformationViewSet(viewsets.ModelViewSet):
 
         try:
             zone = controller.zone_set.get(
-                name=zone_name
+                name=zone_name,
             )
         except Zone.DoesNotExist:
             raise APIException({'detail': 'There is no zone associated with this user'})
@@ -69,13 +76,13 @@ class ZonesInformationViewSet(viewsets.ModelViewSet):
             valid_modules = 0
 
             for module in modules:
-                if module.modulesmeasurement_set.last():
+                if zone.modulesmeasurement_set.filter(module=module).last():
                     data['soil_temperature'] += \
-                        module.modulesmeasurement_set.last()['temperature']
+                        zone.modulesmeasurement_set.filter(module=module).last()['temperature']
                     data['ground_humidity'] += \
-                        module.modulesmeasurement_set.last()['ground_humidity']
+                        zone.modulesmeasurement_set.filter(module=module).last()['ground_humidity']
                     data['status_modules'].append(
-                        module.modulesmeasurement_set.last()['battery_level']
+                        zone.modulesmeasurement_set.filter(module=module).last()['battery_level']
                     )
                     valid_modules += 1
 
@@ -89,7 +96,7 @@ class ZonesInformationViewSet(viewsets.ModelViewSet):
             data['status_modules'] = []
 
             for module in modules:
-                if module.modulesmeasurement_set.last():
+                if zone.modulesmeasurement_set.filter(module=module).last():
                     data['status_modules'].append(0)
 
         return [data]
