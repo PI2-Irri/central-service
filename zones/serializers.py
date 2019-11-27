@@ -53,11 +53,14 @@ class ZoneSerializer(serializers.HyperlinkedModelSerializer):
 
         latitude = 0.0
         longitude = 0.0
+        is_active = False
 
         if math.isnan(data['latitude']) == False:
             latitude = data['latitude']
         if math.isnan(data['longitude']) == False:
             longitude = data['longitude']
+        if validated_data.get('is_active'):
+            is_active = validated_data.get('is_active')
 
         request = self._kwargs.get('context')['request']
 
@@ -88,7 +91,8 @@ class ZoneSerializer(serializers.HyperlinkedModelSerializer):
                 controller=controller,
                 location=data['place_name'],
                 latitude=latitude,
-                longitude=longitude
+                longitude=longitude,
+                is_active=is_active
             )
         except Controller.DoesNotExist as exception:
             raise APIException(

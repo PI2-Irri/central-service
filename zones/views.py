@@ -18,7 +18,7 @@ class ZoneViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
-        self.queryset = user.controllers_set.all()
+        self.queryset = user.controller_set.all()
 
         return self.queryset
 

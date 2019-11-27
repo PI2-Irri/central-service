@@ -2,6 +2,7 @@ from rest_framework import serializers
 from .models import ActuatorsMeasurement
 from .models import ModulesMeasurement
 from .models import ZoneMeasurement
+from .models import Zone
 from .models import Controller
 from modules.models import Module
 from rest_framework.exceptions import APIException
@@ -84,6 +85,7 @@ class ModulesMeasurementSerializer(serializers.HyperlinkedModelSerializer):
         controller = None
         module = None
 
+
         try:
             controller = Controller.objects.get(
                 token=validated_data.get('token')
@@ -107,7 +109,7 @@ class ModulesMeasurementSerializer(serializers.HyperlinkedModelSerializer):
             raise APIException(
                 {'error': 'Zone not found'}
             )
-
+            
         measurement = ModulesMeasurement.objects.create(
             temperature=float(validated_data.get('soil_temperature')),
             ground_humidity=int(validated_data.get('ground_humidity')),
