@@ -4,7 +4,7 @@ from .models import Controller
 from django_cron import CronJobBase, Schedule
 from zones.models import Zone
 from measurements.models import ZoneMeasurement
-from datetime import datetime
+from django.utils.timezone import datetime
 
 class WeatherMeasurementCronjob(CronJobBase):
     RUN_EVERY_MINS = 0

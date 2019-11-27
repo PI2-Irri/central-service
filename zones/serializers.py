@@ -53,11 +53,14 @@ class ZoneSerializer(serializers.HyperlinkedModelSerializer):
 
         latitude = 0.0
         longitude = 0.0
+        is_active = False
 
         if math.isnan(data['latitude']) == False:
             latitude = data['latitude']
         if math.isnan(data['longitude']) == False:
             longitude = data['longitude']
+        if validated_data.get('is_active'):
+            is_active = validated_data.get('is_active')
 
         request = self._kwargs.get('context')['request']
 
@@ -88,7 +91,8 @@ class ZoneSerializer(serializers.HyperlinkedModelSerializer):
                 controller=controller,
                 location=data['place_name'],
                 latitude=latitude,
-                longitude=longitude
+                longitude=longitude,
+                is_active=is_active
             )
         except Controller.DoesNotExist as exception:
             raise APIException(
@@ -103,27 +107,34 @@ class ZonesInformationSerializer(serializers.HyperlinkedModelSerializer):
     precipitation = serializers.FloatField(default=0.0)
     ground_humidity = serializers.FloatField(default=0.0)
     status_modules = serializers.ListField()
+    water_consumption = serializers.FloatField(default=0.0)
 
     class Meta:
         model = Zone
         fields = (
-            'name',
-            'zip',
-            'latitude',
-            'longitude',
-            'is_active',
-            'controller',
-            'soil_temperature',
-            'air_temperature',
-            'precipitation',
-            'ground_humidity',
-            'status_modules'
+        'name',
+        'zip',
+        'latitude',
+        'longitude',
+        'is_active',
+        'controller',
+        'soil_temperature',
+        'air_temperature',
+        'precipitation',
+        'ground_humidity',
+        'status_modules',
+        'water_consumption'
         )
 
 class ActiveZoneSerializer(serializers.HyperlinkedModelSerializer):
-    model = Zone
-    fields = (
-        'status',
-        'name',
-        'token'
-    )
+    status = serializers.BooleanField()
+    token = serializers.CharField()
+    zone_name = serializers.CharField()
+
+    class Meta:
+        model = Zone
+        fields = (
+            'status',
+            'zone_name',
+            'token'
+        )

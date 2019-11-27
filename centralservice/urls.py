@@ -12,7 +12,9 @@ from zones.views import ZoneViewSet
 from zones.views import ZonesInformationViewSet
 from measurements import views as measurements_views
 from modules import views as modules_views
-
+from schedules.views import SchedulesFromControllerViewSet
+from schedules.views import SchedulesViewSet
+from schedules.views import NotificationViewSet
 from users.views import CustomUserViewSet
 
 router = DefaultRouter()
@@ -50,10 +52,25 @@ router.register(
     r'zones_measurements',
     measurements_views.ZoneMeasurementViewSet
 )
-
+router.register(
+    r'schedules_info',
+    SchedulesFromControllerViewSet,
+    basename='schedules_info'
+)
+router.register(
+    r'schedules',
+    SchedulesViewSet,
+    basename='schedules'
+)
+router.register(
+    r'notification',
+    NotificationViewSet,
+    basename='notification'
+)
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     path('', include(router.urls)),
     path(r'login/', CustomUserViewSet.login),
-    path(r'signup/', CustomUserViewSet.signup)
+    path(r'signup/', CustomUserViewSet.signup),
+    path(r'active_zone/', ZonesInformationViewSet.active_zone)
 ]

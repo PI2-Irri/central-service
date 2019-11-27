@@ -39,12 +39,13 @@ class ControllerItemInfoViewSet(viewsets.ModelViewSet):
         result = []
 
         controllers = user.controller_set.all()
+        controllers_spec = user.controllerspecification_set.all()
 
         for controller in controllers:
             data = {}
             measurement = controller.actuatorsmeasurement_set.last()
 
-            data['controller'] = ControllerSpecification.objects.get(
+            data['controller'] = controllers_spec.get(
                 controller=controller
             )
             data['token'] = controller.token
