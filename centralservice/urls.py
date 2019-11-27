@@ -65,5 +65,6 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     path('', include(router.urls)),
     path(r'login/', CustomUserViewSet.login),
-    path(r'signup/', CustomUserViewSet.signup)
+    path(r'signup/', CustomUserViewSet.signup),
+    path(r'active_zone/', ZonesInformationViewSet.active_zone)
 ]

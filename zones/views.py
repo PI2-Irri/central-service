@@ -5,29 +5,25 @@ from .models import Zone
 from .models import Controller
 from .serializers import ZoneSerializer
 from .serializers import ZonesInformationSerializer
+from .serializers import ActiveZoneSerializer
 from rest_framework.exceptions import APIException
 from operator import mul
-from rest_framework.decorators import action
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework.status import HTTP_200_OK
 
 
 class ZoneViewSet(viewsets.ModelViewSet):
     queryset = Zone.objects.none()
     serializer_class = ZoneSerializer
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
-    authentication_classes = (TokenAuthentication,)
-
-    def get_queryset(self):
-        user = self.request.user
-        self.queryset = user.controllers_set.all()
-
-        return self.queryset
+    permission_classes = (permissions.AllowAny,)
 
 
 class ZonesInformationViewSet(viewsets.ModelViewSet):
     queryset = Zone.objects.none()
     serializer_class = ZonesInformationSerializer
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
-    authentication_classes = (TokenAuthentication,)
+    permission_classes = (permissions.AllowAny,)
+    # authentication_classes = (TokenAuthentication,)
 
     def get_queryset(self):
         token = self.request.query_params.get('token')
@@ -98,25 +94,30 @@ class ZonesInformationViewSet(viewsets.ModelViewSet):
 
         return [data]
 
-    @action(detail=True, methods=['post'])
-    def active_zone(self, request):
+    @api_view(['POST'])
+    def active_zone(request):
         serializer_class = ActiveZoneSerializer(data=request.data)
 
         if serializer_class.is_valid():
-            controller = Controller.objects.get(token=request.data['controller'])
+            controller = Controller.objects.get(token=request.data['token'])
             zones = controller.zone_set.filter(is_active=True)
 
             for zone in zones:
                 zone.is_active = False
                 zone.save()
 
-            zone = Zone.objects.get(name=request.data['name'])
+            zone = Zone.objects.get(name=request.data['zone_name'])
             zone.is_active = True
             zone.save()
 
             if request.data['status'] == True:
                 controller.status = True
                 controller.save()
+
+            return Response(
+                {'detail': 'Zone activated.'},
+                status=HTTP_200_OK
+            )
         else:
             raise APIException(
                 {'error': 'Invalid fields'}

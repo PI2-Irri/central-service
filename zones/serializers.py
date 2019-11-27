@@ -107,23 +107,28 @@ class ZonesInformationSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Zone
         fields = (
-            'name',
-            'zip',
-            'latitude',
-            'longitude',
-            'is_active',
-            'controller',
-            'soil_temperature',
-            'air_temperature',
-            'precipitation',
-            'ground_humidity',
-            'status_modules'
+        'name',
+        'zip',
+        'latitude',
+        'longitude',
+        'is_active',
+        'controller',
+        'soil_temperature',
+        'air_temperature',
+        'precipitation',
+        'ground_humidity',
+        'status_modules'
         )
 
 class ActiveZoneSerializer(serializers.HyperlinkedModelSerializer):
-    model = Zone
-    fields = (
-        'status',
-        'name',
-        'token'
-    )
+    status = serializers.BooleanField()
+    token = serializers.CharField()
+    zone_name = serializers.CharField()
+
+    class Meta:
+        model = Zone
+        fields = (
+            'status',
+            'zone_name',
+            'token'
+        )
