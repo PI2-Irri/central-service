@@ -4,7 +4,6 @@ from .models import ControllerSpecification
 from .exceptions import ControllerTokenException
 from rest_framework.exceptions import APIException
 from django.core.exceptions import ObjectDoesNotExist
-from .utils import ControllerCommunication
 from modules.models import Module
 from modules.serializers import ModuleSerializer
 import os

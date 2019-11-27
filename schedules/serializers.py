@@ -3,6 +3,7 @@ from rest_framework.exceptions import APIException
 from django.core.exceptions import ObjectDoesNotExist
 from .models import Schedule
 from .models import Zone
+from .models import Notification
 from controllers.models import Controller
 from django.utils.timezone import datetime
 
@@ -95,4 +96,14 @@ class SchedulesFromController(serializers.HyperlinkedModelSerializer):
             'zone',
             'attr',
             'schedule'
+        )
+
+
+class NotificationSerializer(serializers.HyperlinkedModelSerializer):
+
+    class Meta:
+        model = Notification
+        fields = (
+            'message',
+            'date'
         )

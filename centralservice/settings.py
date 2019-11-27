@@ -123,7 +123,8 @@ AUTH_PASSWORD_VALIDATORS = [
 # }
 
 CRON_CLASSES = [
-    'measurements.cronjob.WeatherMeasurementCronjob'
+    'measurements.cronjob.WeatherMeasurementCronjob',
+    'schedules.cronjob.MinutelyVerificationCronJob'
 ]
 
 # Internationalization

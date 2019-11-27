@@ -7,6 +7,7 @@ from .models import Schedule
 from controllers.models import Controller
 from .serializers import SchedulesFromController
 from .serializers import ScheduleSerializer
+from .serializers import NotificationSerializer
 
 
 class SchedulesViewSet(viewsets.ModelViewSet):
@@ -71,3 +72,15 @@ class SchedulesFromControllerViewSet(viewsets.ModelViewSet):
                 informations.append(data)
 
         return informations
+
+class NotificationViewSet(viewsets.ModelViewSet):
+    queryset = Schedule.objects.none()
+    serializer_class = NotificationSerializer
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+    authentication_classes = (TokenAuthentication,)
+
+    def get_queryset(self):
+        user = self.request.user
+        self.queryset = user.notification_set.all().reverse()[:10]
+
+        return self.queryset
