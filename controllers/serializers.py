@@ -94,7 +94,7 @@ class ControllerSerializer(serializers.HyperlinkedModelSerializer):
         # if any of them is changed them read=false
         fields = ['status', 'timer']
         for field in fields:
-            if not validated_data.get(field):
+            if validated_data.get(field) is None:
                 continue
             exec('instance.%s = validated_data.get(field)' % (field))
             instance.read = False
