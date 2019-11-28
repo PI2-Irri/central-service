@@ -129,6 +129,8 @@ class ZonesInformationViewSet(viewsets.ModelViewSet):
             zone.is_active = True
             zone.save()
 
+            controller.read = False
+
             if request.data['status'] == True:
                 controller.status = True
                 controller.save()
