@@ -27,14 +27,18 @@ class WeatherMeasurementCronjob(CronJobBase):
 
             if latitude == 0 and longitude == 0:
                 response_air = requests.get(os.getenv('WEATHER_URL') + '/minutely_measurement/',
-                            data={'location_name':  zone.location}).json()
+                            params={'location_name':  zone.location}).json()
                 response_forecast = requests.get(os.getenv('WEATHER_URL') + '/forecast_measurement/',
-                            data={'location_name':  zone.location}).json()
+                            params={'location_name':  zone.location,
+                                  'start_date': datetime.now().strftime('%Y-%m-%d') + ' 00:00:00',
+                                  'end_date': datetime.now().strftime('%Y-%m-%d') + ' 23:59:59'}).json()
             else:
                 response_air = requests.get(os.getenv('WEATHER_URL') + '/minutely_measurement/',
-                            data={'latitude':  zone.latitude, 'longitude': zone.longitude}).json()
+                            params={'latitude':  zone.latitude, 'longitude': zone.longitude}).json()
                 response_forecast = requests.get(os.getenv('WEATHER_URL') + '/forecast_measurement/',
-                            data={'latitude':  zone.latitude, 'longitude': zone.longitude}).json()
+                            params={'latitude':  zone.latitude, 'longitude': zone.longitude,
+                            'start_date': datetime.now().strftime('%Y-%m-%d') + ' 00:00:00',
+                            'end_date': datetime.now().strftime('%Y-%m-%d') + ' 23:59:59'}).json()
 
             if response_air != []:
                 air_temperature = response_air[0]['temperature']
@@ -43,7 +47,12 @@ class WeatherMeasurementCronjob(CronJobBase):
                 return
 
             if response_forecast != []:
-                precipitation = response_forecast[0]['rain_precipitation'] if response_forecast[0]['rain_precipitation'] else 0
+                precipitation = 0
+
+                for item in response_forecast:
+                    print(item['rain_precipitation'])
+                    if item['rain_precipitation']:
+                        precipitation += item['rain_precipitation']
             else:
                 print('Error in /forecast_measurement/ collection at {}'.format(datetime.now()))
                 return
