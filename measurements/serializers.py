@@ -84,7 +84,7 @@ class ModulesMeasurementSerializer(serializers.HyperlinkedModelSerializer):
     def create(self, validated_data):
         controller = None
         module = None
-
+        zone = None
 
         try:
             controller = Controller.objects.get(
@@ -109,7 +109,7 @@ class ModulesMeasurementSerializer(serializers.HyperlinkedModelSerializer):
             raise APIException(
                 {'error': 'Zone not found'}
             )
-            
+
         measurement = ModulesMeasurement.objects.create(
             temperature=float(validated_data.get('soil_temperature')),
             ground_humidity=int(validated_data.get('ground_humidity')),
